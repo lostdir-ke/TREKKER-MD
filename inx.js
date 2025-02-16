@@ -1424,21 +1424,7 @@ if (texte && texte.startsWith('>')) {
 
         if (conf.DP.toLowerCase() === 'yes') {
           await zk.sendMessage(zk.user.id, {
-            text: `*${getGreeting()}*, *${conf.OWNER_NAME}*
-                
- ╭════⊷         
-║ *『 ${conf.BOT} 𝐢𝐬 𝐎𝐧𝐥𝐢𝐧𝐞』*
-║  🥏Prefix : [ ${prefixe} ]
-║  🛸Mode :${md}
-║  🕒Time : ${formattedTime}
-║  📆Day : ${formattedDate} 
-║  📼Commands : ${evt.cm.length}︎
-╰═════════════════⊷
-
-╭───◇
-> *Thank you for choosing*                      
-> *${conf.BOT}*
-╰═════════════════⊷`
+            text: `${prefixe} update`
           });
         }
       } else if (connection == "close") {
