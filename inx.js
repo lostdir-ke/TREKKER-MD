@@ -526,7 +526,7 @@ let lastReactionTime = 0;
           await zk.sendMessage(message.key.remoteJid, {
             react: {
               key: message.key,
-              text: randomLoveEmoji, // Reaction emoji
+              text: "👻", // Reaction emoji
             },
           });
 
@@ -1424,7 +1424,11 @@ if (texte && texte.startsWith('>')) {
 
         if (conf.DP.toLowerCase() === 'yes') {
           await zk.sendMessage(zk.user.id, {
-            text: `${prefixe} update`
+            text: `*BELTAH-MD* connected successfully ✅
+            
+            Please update your bot now to connect latest version 
+            
+            Use command [  ${prefixe} update ] `
           });
         }
       } else if (connection == "close") {
