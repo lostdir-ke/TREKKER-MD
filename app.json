@@ -63,18 +63,18 @@
       "required": false
     },
     "BOT_NAME": {
-      "description": "you must give a name for you bot uhh??!!",
-      "value": "",
+      "description": "Change this if you don't like my name",
+      "value": "BELTAH-MD",
       "required": true 
     },
-    "EMOJIS": {
-      "description": "Imput your favorite emojis to react on your friends status,, each emoji must be separated by a comma.!!",
-      "value": "👻,❤️,☺️",
+    "CHATBOT": {
+      "description": "activate Chatbot by filling yes else no",
+      "value": "no" ,
       "required": false 
     },
-    "TIMEZONE": {
-      "description": "you must give a name for you bot uhh??!!",
-      "value": "Africa/Nairobi",
+    "TALKING BOT": {
+      "description": "Bot will listen and reply to voice notes",
+      "value": "no",
       "required": false 
     },
     "GROUP_CONTROL": {
@@ -108,13 +108,13 @@
       "required": true
     },
     "URL": {
-      "description": "you must add your bot image url.Get your image url now and fill it here",
+      "description": "Change this image and input yours",
       "value": "https://telegra.ph/file/dcce2ddee6cc7597c859a.jpg",
       "required": true
     },
     "AUTO_READ_MESSAGES": {
       "description": "yes toactivate no to deactivate",
-      "value": "yes",
+      "value": "no",
       "required": false  
     },
     "NUMERO_OWNER": {
@@ -124,7 +124,7 @@
     },
     "WARN_COUNT": {
       "description": "Set the warning limit for warning commands",
-      "value": "3",
+      "value": "10",
       "required": false
     },
     "STARTING_BOT_MESSAGE": {
@@ -148,8 +148,8 @@
       "required": false
     },
     "AUTO_BLOCK": {
-      "description": "Type true if you want bot to automatically  block those who spam your dm ",
-      "value": "no",
+      "description": "Type true if you want bot to automatically  block those who insult you in your dm ",
+      "value": "yes",
       "required": false
     },
     "AUTO_REACTION": {
@@ -170,3 +170,4 @@
     }
   ]
 }
+
