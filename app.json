@@ -59,23 +59,13 @@
     },
     "ANTICALL_MSG": {
       "description": "Type your anticall message to always send when calls are declined.You can as well leave it blank",
-      "value": "",
+      "value": "> BELTAH-MD on board ||No calls allowed.",
       "required": false
     },
     "BOT_NAME": {
       "description": "Change this if you don't like my name",
       "value": "BELTAH-MD",
       "required": true 
-    },
-    "CHATBOT": {
-      "description": "activate Chatbot by filling yes else no",
-      "value": "no" ,
-      "required": false 
-    },
-    "TALKING BOT": {
-      "description": "Bot will listen and reply to voice notes",
-      "value": "no",
-      "required": false 
     },
     "GROUP_CONTROL": {
       "description": "urs if you want bot yo control group features such as antilink,antispam,antibad",
@@ -170,4 +160,3 @@
     }
   ]
 }
-
