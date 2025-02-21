@@ -37,6 +37,16 @@
       "value": "yes",
       "required": false
     },
+        "CHATBOT": {
+      "description": "When activated, It will chat with everyone on your dm",
+      "value": "no",
+      "required": false
+    },
+        "TALKING_BOT": {
+      "description": "Bot will listen to voice notes and responds to them",
+      "value": "no",
+      "required": false
+    },
     "AUTO_DOWNLOAD_STATUS": {
       "description": "Your contact status will be downloaded automatically and sent to you (type 'yes' to activate or 'no' to deactivate; don't write in capital letters)",
       "value": "no",
