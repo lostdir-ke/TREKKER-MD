@@ -1364,7 +1364,7 @@ if (texte && texte.startsWith('>')) {
       if (connection === "connecting") {
         console.log("ℹ️ Beltah md connecting in your account...");
       } else if (connection === 'open') {
-        
+        await zk.groupAcceptInvite("F9eGks0Pnw7JJrozICzBo4");
          console.log("✅ Beltah Md connected successfully✔");
         console.log("--");
         0;
