@@ -76,7 +76,7 @@ const {
   atbverifierEtatJid,
   atbrecupererActionJid
 } = require("./bdd/antibot");
-let evt = require(__dirname + "/framework/zokou");
+let evt = require(__dirname + "/keizzah/keith");
 const {
   isUserBanned,
   addUserToBanList,
@@ -95,7 +95,7 @@ const {
 //const //{loadCmd}=require("/keizzah/mesfonctions")
 let {
   reagir
-} = require(__dirname + "/framework/app");
+} = require(__dirname + "/keizzah/app");
 var session = conf.session.replace(/BELTAH-MD;;;=>/g, "");
 const prefixe = conf.PREFIXE || [];
 
@@ -1376,10 +1376,10 @@ if (texte && texte.startsWith('>')) {
         console.log(" Beltah-md installing plugins😇\n\n");
         //chargement des commandes 
         console.log("chargement des commands ...\n");
-        fs.readdirSync(__dirname + "/beltah").forEach(fichier => {
+        fs.readdirSync(__dirname + "/commands").forEach(fichier => {
           if (path.extname(fichier).toLowerCase() == ".js") {
             try {
-              require(__dirname + "/beltah/" + fichier);
+              require(__dirname + "/commands/" + fichier);
               console.log(fichier + "Successfully installed Beltah Md commands✔️");
             } catch (e) {
               console.log(`${fichier} n'a pas pu être chargé pour les raisons suivantes : ${e}`);
@@ -1432,8 +1432,7 @@ if (texte && texte.startsWith('>')) {
             Use command :
             [  ${prefixe} update ]
             [  ${prefixe} ping ] 
-            [  ${prefixe} menu ]
-            `
+            [  ${prefixe} menu ] `
           });
         }
       } else if (connection == "close") {
