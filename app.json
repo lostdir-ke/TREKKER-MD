@@ -32,6 +32,21 @@
       "value": "yes",
       "required": false
     },
+
+"GITHUB_API": {
+  "description": "Enter your GitHub API here",
+  "value"; "",
+  "required": true
+},
+
+
+
+
+
+
+
+
+    
     "AUTOBIO": {
       "description": "This automatically update your bio status.Always make sure you insert your OWNER_NAME since it uses that to update your bio name status",
       "value": "yes",
