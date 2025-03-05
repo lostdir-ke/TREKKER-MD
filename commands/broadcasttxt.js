@@ -1,89 +1,135 @@
 
 const { keith } = require("../keizzah/keith");
-const { Pool } = require("pg");
 const fs = require('fs-extra');
 const axios = require('axios');
 const path = require('path');
 const s = require("../set");
+const GitHubAPI = require("../keizzah/github");
 
-// Database configuration
-const dbUrl = s.DATABASE_URL ? s.DATABASE_URL : "postgresql://flashmd_user:JlUe2Vs0UuBGh0sXz7rxONTeXSOra9XP@dpg-cqbd04tumphs73d2706g-a/flashmd";
-const proConfig = {
-  connectionString: dbUrl,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-};
+// GitHub configuration
+const GITHUB_TOKEN = process.env.GITHUB_API || "";
+const GITHUB_OWNER = "Beltah254";
+const GITHUB_REPO = "BELTAH-MD";
+const GITHUB_BRANCH = "main";
 
-const pool = new Pool(proConfig);
-const GITHUB_BASE_URL = 'https://raw.githubusercontent.com/Beltah254/BELTAH-MD/main/';
+// Initialize GitHub API
+const github = new GitHubAPI(GITHUB_TOKEN);
 
-// Create broadcast logs table if it doesn't exist
-async function createBroadcastLogsTable() {
-  const client = await pool.connect();
+// Local storage for broadcast logs
+const BROADCAST_LOGS_FILE = 'broadcast_logs.json';
+
+// Initialize broadcast logs file if it doesn't exist
+async function initBroadcastLogs() {
   try {
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS broadcast_logs (
-        id SERIAL PRIMARY KEY,
-        phone_number TEXT NOT NULL,
-        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
-    console.log("Broadcast logs table created or already exists");
+    if (!await fs.pathExists(BROADCAST_LOGS_FILE)) {
+      await fs.writeJSON(BROADCAST_LOGS_FILE, []);
+    }
+    
+    // Try to sync with GitHub
+    await syncWithGitHub();
+    
+    console.log("Broadcast logs initialized");
+    return true;
   } catch (error) {
-    console.error("Error creating broadcast logs table:", error);
-  } finally {
-    client.release();
+    console.error("Error initializing broadcast logs:", error);
+    return false;
+  }
+}
+
+// Sync local broadcast logs with GitHub
+async function syncWithGitHub() {
+  try {
+    // Sync broadcast logs
+    const count = await github.syncBroadcastLogs(GITHUB_OWNER, GITHUB_REPO, BROADCAST_LOGS_FILE, GITHUB_BRANCH);
+    if (count >= 0) {
+      console.log(`Synced ${count} broadcast logs with GitHub`);
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error("Error syncing with GitHub:", error);
+    return false;
   }
 }
 
 // Check if a number has already been messaged
 async function hasBeenMessaged(phoneNumber) {
-  const client = await pool.connect();
   try {
-    const query = "SELECT EXISTS (SELECT 1 FROM broadcast_logs WHERE phone_number = $1)";
-    const result = await client.query(query, [phoneNumber]);
-    return result.rows[0].exists;
+    if (!await fs.pathExists(BROADCAST_LOGS_FILE)) {
+      return false;
+    }
+    
+    const logs = await fs.readJSON(BROADCAST_LOGS_FILE);
+    return logs.some(log => log.phone_number === phoneNumber);
   } catch (error) {
     console.error("Error checking if number has been messaged:", error);
     return true; // Assume it's been messaged to prevent duplicates in case of error
-  } finally {
-    client.release();
   }
 }
 
 // Log a number as having been messaged
 async function logMessaged(phoneNumber) {
-  const client = await pool.connect();
   try {
-    const query = "INSERT INTO broadcast_logs (phone_number) VALUES ($1)";
-    await client.query(query, [phoneNumber]);
+    let logs = [];
+    if (await fs.pathExists(BROADCAST_LOGS_FILE)) {
+      logs = await fs.readJSON(BROADCAST_LOGS_FILE);
+    }
+    
+    // Add new log
+    logs.push({
+      phone_number: phoneNumber,
+      timestamp: new Date().toISOString()
+    });
+    
+    // Save locally
+    await fs.writeJSON(BROADCAST_LOGS_FILE, logs);
+    
+    // Update on GitHub
+    await github.updateFile(
+      GITHUB_OWNER,
+      GITHUB_REPO,
+      BROADCAST_LOGS_FILE,
+      JSON.stringify(logs, null, 2),
+      `Add ${phoneNumber} to broadcast logs`,
+      GITHUB_BRANCH
+    );
+    
+    return true;
   } catch (error) {
     console.error("Error logging messaged number:", error);
-  } finally {
-    client.release();
+    return false;
   }
 }
 
 // Download file from GitHub
 async function downloadFromGitHub(filename) {
   try {
-    const response = await axios.get(`${GITHUB_BASE_URL}${filename}`);
-    await fs.writeFile(filename, typeof response.data === 'object' ? JSON.stringify(response.data) : response.data);
-    return true;
+    return await github.downloadFile(GITHUB_OWNER, GITHUB_REPO, filename, filename, GITHUB_BRANCH);
   } catch (error) {
     console.error(`Error downloading ${filename}:`, error);
     return false;
   }
 }
 
-// Upload file to GitHub (using CURL as this would need GitHub API and token)
+// Upload file to GitHub
 async function uploadToGitHub(filename, message) {
   try {
-    // This function will need to be implemented if you have GitHub API access
-    // For now, we'll just save locally
-    console.log(`File ${filename} would be uploaded to GitHub with message: ${message}`);
-    return true;
+    if (!await fs.pathExists(filename)) {
+      console.error(`File ${filename} does not exist locally`);
+      return false;
+    }
+    
+    const content = await fs.readFile(filename, 'utf8');
+    const result = await github.updateFile(
+      GITHUB_OWNER,
+      GITHUB_REPO,
+      filename,
+      content,
+      message,
+      GITHUB_BRANCH
+    );
+    
+    return !!result;
   } catch (error) {
     console.error(`Error uploading ${filename}:`, error);
     return false;
@@ -184,8 +230,8 @@ async function readProgress() {
   }
 }
 
-// Sync contacts from GitHub already messaged to database
-async function syncGitHubContactsToDatabase() {
+// Sync contacts from GitHub verified contacts
+async function syncGitHubContactsToVerified() {
   try {
     // Try to download verified_contacts.txt from GitHub
     const downloaded = await downloadFromGitHub('verified_contacts.txt');
@@ -204,14 +250,17 @@ async function syncGitHubContactsToDatabase() {
     
     let syncCount = 0;
     for (const contact of contacts) {
-      // Only add if not already in database
+      // Only add if not already logged
       if (!(await hasBeenMessaged(contact.phoneNumber))) {
         await logMessaged(contact.phoneNumber);
         syncCount++;
       }
     }
     
-    console.log(`Synced ${syncCount} contacts from GitHub to database`);
+    // Update logs on GitHub
+    await syncWithGitHub();
+    
+    console.log(`Synced ${syncCount} contacts from GitHub to verified list`);
     return syncCount;
   } catch (error) {
     console.error("Error syncing contacts:", error);
@@ -219,8 +268,8 @@ async function syncGitHubContactsToDatabase() {
   }
 }
 
-// Initialize table
-createBroadcastLogsTable();
+// Initialize broadcast logs
+initBroadcastLogs();
 
 // Register broadcast2 command
 keith({
@@ -240,8 +289,8 @@ keith({
   // Check for and process any GitHub progress
   await repondre("🔍 Checking for existing progress on GitHub...");
   
-  // Sync contacts from GitHub to database
-  const syncedCount = await syncGitHubContactsToDatabase();
+  // Sync contacts from GitHub to verified list
+  const syncedCount = await syncGitHubContactsToVerified();
   if (syncedCount > 0) {
     await repondre(`✅ Synced ${syncedCount} verified contacts from GitHub to database`);
   }
