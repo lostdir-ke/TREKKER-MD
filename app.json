@@ -11,7 +11,11 @@
   "repository": "https://github.com/lostdir-ke/Test-beltah",
   "succes_url": "/",
   "stack": "container",
-  "env": {"GITHUB" :{"description": "Enter your GitHub Api key","value": "", "required": "true"}
+  "env": {"GITHUB_API": {
+    "description": "Enter your GitHub Api key", 
+    "value": "", 
+    "required": "true"
+  },
     {
         "PREFIX": {
       "description": "Choose your bot's prefix",
