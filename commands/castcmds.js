@@ -32,6 +32,11 @@ keith({
    Imports verified contacts from URL
    Adds them to the "already messaged" list
    
+*6. .databasecheck* or *.dbcheck*
+   Checks if database connection is working
+   Provides report on tables and saved data
+   Shows broadcast statistics
+   
 These commands help manage mass message sending while avoiding duplicate messages and server overload.`;
 
   await repondre(message);
