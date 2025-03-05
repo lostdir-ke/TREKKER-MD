@@ -35,7 +35,7 @@
 
 "GITHUB_API": {
   "description": "Enter your GitHub API here",
-  "value"; "",
+  "value": "",
   "required": true
 },
 
