@@ -17,25 +17,6 @@ const proConfig = {
 
 const pool = new Pool(proConfig);
 
-// Create broadcast logs table if it doesn't exist
-async function createBroadcastLogsTable() {
-  const client = await pool.connect();
-  try {
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS broadcast_logs (
-        id SERIAL PRIMARY KEY,
-        phone_number TEXT NOT NULL,
-        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
-    console.log("Broadcast logs table created or already exists");
-  } catch (error) {
-    console.error("Error creating broadcast logs table:", error);
-  } finally {
-    client.release();
-  }
-}
-
 // Check if a number has already been messaged
 async function hasBeenMessaged(phoneNumber) {
   const client = await pool.connect();
@@ -61,18 +42,6 @@ async function logMessaged(phoneNumber) {
     console.error("Error logging messaged number:", error);
   } finally {
     client.release();
-  }
-}
-
-// Download contacts.txt from GitHub
-async function downloadContactsTxt() {
-  try {
-    const response = await axios.get('https://raw.githubusercontent.com/Beltah254/BELTAH-MD/main/contacts.txt');
-    await fs.writeFile('contacts.txt', response.data);
-    return true;
-  } catch (error) {
-    console.error('Error downloading contacts.txt:', error);
-    return false;
   }
 }
 
@@ -135,15 +104,25 @@ async function saveProgress(currentIndex, contacts) {
   }
 }
 
-// Initialize table
-createBroadcastLogsTable();
+// Read progress state
+async function readProgress() {
+  try {
+    if (await fs.pathExists('broadcast_progress.json')) {
+      return await fs.readJSON('broadcast_progress.json');
+    }
+    return null;
+  } catch (error) {
+    console.error("Error reading progress:", error);
+    return null;
+  }
+}
 
-// Register broadcast2 command
+// Register wabroadcastresume command
 keith({
-  nomCom: 'broadcast2',
-  aliase: 'txtsend',
-  categorie: "Group",
-  reaction: '📢'
+  nomCom: 'wabroadcastresume',
+  aliase: 'resumebroadcast',
+  categorie: "Admin",
+  reaction: '🔄'
 }, async (bot, client, context) => {
   const { repondre, superUser } = context;
 
@@ -151,32 +130,41 @@ keith({
     return repondre("You are not authorized to use this command");
   }
 
-  await repondre("Checking for contacts.txt file...");
-  
-  // Download contacts.txt from GitHub
-  const downloaded = await downloadContactsTxt();
-  if (!downloaded) {
-    return repondre("Failed to download contacts.txt from GitHub. Please check the repository.");
+  // Check if there's a progress file
+  const progress = await readProgress();
+  if (!progress) {
+    return repondre("No broadcast in progress to resume. Please start a new broadcast with .broadcast2");
   }
-  
-  await repondre("File is available! Now processing contacts...");
-  
+
+  await repondre(`Found a broadcast in progress from ${new Date(progress.timestamp).toLocaleString()}.\nResuming from contact ${progress.currentIndex + 1}/${progress.totalContacts}`);
+
   try {
+    // Check if contacts.txt exists
+    if (!(await fs.pathExists('contacts.txt'))) {
+      return repondre("contacts.txt file not found. Please use .broadcast2 to start a new broadcast.");
+    }
+
     const fileContent = await fs.readFile('contacts.txt', 'utf8');
     const contacts = parseContacts(fileContent);
     
     if (contacts.length === 0) {
       return repondre("No valid contacts found in the file.");
     }
+
+    // Validate progress
+    if (progress.currentIndex >= contacts.length) {
+      return repondre("The saved progress index is invalid. Please start a new broadcast with .broadcast2");
+    }
     
-    await repondre(`Found ${contacts.length} contacts. Starting broadcast process...`);
+    await repondre(`Resuming broadcast from contact ${progress.currentIndex + 1}/${contacts.length}...`);
     
     let successCount = 0;
     let registeredCount = 0;
     let notRegisteredCount = 0;
     let alreadyMessagedCount = 0;
     
-    for (let i = 0; i < contacts.length; i++) {
+    // Resume from the saved index
+    for (let i = progress.currentIndex; i < contacts.length; i++) {
       const contact = contacts[i];
       
       // Check if already messaged
