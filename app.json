@@ -11,8 +11,8 @@
   "repository": "https://github.com/lostdir-ke/Test-beltah",
   "succes_url": "/",
   "stack": "container",
-  "env": 
-
+  "env": {
+{
   "GITHUB_API": {
     "description": "Enter your GitHub Api key", 
     "value": "", 
