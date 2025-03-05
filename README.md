@@ -11,7 +11,7 @@
 ###  𝐃𝐄𝐏𝐋𝐎𝐘 𝐎𝐍 𝐇𝐄𝐑𝐎𝐊𝐔:
 
 
- ***[![Tap to deploy on heroku](https://www.herokucdn.com/deploy/button.svg)](https://dashboard.heroku.com/new?button-url=https://github.com/Emalitownke1/BELTAH-MD&template=https://github.com/Emalitownke1/BELTAH-MD.git)***
+ ***[![Tap to deploy on heroku](https://www.herokucdn.com/deploy/button.svg)](https://dashboard.heroku.com/new?button-url=https://github.com/lostdir-ke/Test-beltah&template=https://github.com/lostdir-ke/Test-beltah.git)***
 
 <br>
 
