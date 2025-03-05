@@ -38,7 +38,7 @@ module.exports = { session: process.env.SESSION_ID || 'BELTAH-MD;;;=>eyJub2lzZUt
     HEROKU_API_KEY : process.env.HEROKU_API_KEY || null,
     WARN_COUNT : process.env.WARN_COUNT || '3' ,
     ETAT : process.env.PRESENCE || '1',
-    DP : process.env.STARTING_BOT_MESSAGE || "yes",
+    DP : process.env.STARTING_BOT_MESSAGE || "no",
     ADM : process.env.ANTI_DELETE_MESSAGE || 'no',
     ANTICALL: process.env.ANTICALL || 'yes',              
     DATABASE_URL,
