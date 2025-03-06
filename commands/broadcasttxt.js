@@ -181,6 +181,7 @@ function getRandomInterval() {
 // Save progress state locally and to GitHub
 async function saveProgress(currentIndex, contacts, stats = {}) {
   try {
+    // Always save contacts in the progress file to ensure we can resume properly
     const progressData = {
       currentIndex,
       timestamp: new Date().toISOString(),
@@ -196,6 +197,9 @@ async function saveProgress(currentIndex, contacts, stats = {}) {
     // Also save to GitHub repository structure
     await fs.ensureDir('attached_assets');
     await fs.writeJSON('attached_assets/broadcast_progress.json', progressData);
+    
+    // Save a backup of the contacts in a separate file
+    await fs.writeJSON('attached_assets/saved_whatsapp_contacts.json', contacts);
 
     // Attempt to upload to GitHub
     // uploadToGitHub('attached_assets/broadcast_progress.json', 'Update broadcast progress');
@@ -320,6 +324,26 @@ keith({
                  new Date();
 
     await repondre(`📝 Found an active broadcast in progress from ${date.toLocaleString()}.\n\nResuming from contact ${previousBroadcast.currentIndex + 1}/${previousBroadcast.totalContacts}\n\nTo restart instead, use: .broadcast2 restart`);
+    
+    // Check if there are contacts in the progress file
+    if (previousBroadcast.savedContacts && previousBroadcast.savedContacts.length > 0) {
+      console.log("Using contacts from saved progress file");
+      
+      // Resume using these saved contacts
+      const resumeData = {
+        currentIndex: previousBroadcast.currentIndex,
+        timestamp: previousBroadcast.timestamp,
+        totalContacts: previousBroadcast.totalContacts,
+        stats: previousBroadcast.stats || {},
+        isActive: true,
+        savedContacts: previousBroadcast.savedContacts
+      };
+      
+      // Save this as the current progress
+      await fs.writeJSON('broadcast_progress.json', resumeData);
+      
+      // Silently return - the code below will detect this progress and resume
+    }
   }
 
   // Check for and process any GitHub progress
@@ -345,8 +369,42 @@ keith({
       if (progress.savedContacts && progress.savedContacts.length > 0) {
         console.log("Using contacts from progress file");
         contacts = progress.savedContacts;
+        await repondre("✅ Using contacts from saved broadcast progress!");
       } 
-      // If no contacts in progress, check for contacts.txt
+      // If no contacts in progress, check for saved_whatsapp_contacts.json
+      else if (await fs.pathExists('attached_assets/saved_whatsapp_contacts.json')) {
+        try {
+          await repondre("✅ Found saved_whatsapp_contacts.json in attached_assets!");
+          const savedContacts = await fs.readJSON('attached_assets/saved_whatsapp_contacts.json');
+          
+          if (savedContacts && Array.isArray(savedContacts) && savedContacts.length > 0) {
+            contacts = savedContacts;
+            await repondre(`✅ Loaded ${contacts.length} contacts from saved_whatsapp_contacts.json`);
+          } else {
+            await repondre("⚠️ saved_whatsapp_contacts.json doesn't contain valid contacts. Falling back to contacts.txt");
+            
+            // Process contacts from file as fallback
+            if (await fs.pathExists('contacts.txt')) {
+              const fileContent = await fs.readFile('contacts.txt', 'utf8');
+              contacts = parseContacts(fileContent);
+            } else {
+              return repondre("❌ No valid contacts found in saved files.");
+            }
+          }
+        } catch (error) {
+          console.error("Error reading saved_whatsapp_contacts.json:", error);
+          await repondre("⚠️ Error reading saved contacts file. Falling back to contacts.txt");
+          
+          // Fallback to contacts.txt
+          if (await fs.pathExists('contacts.txt')) {
+            const fileContent = await fs.readFile('contacts.txt', 'utf8');
+            contacts = parseContacts(fileContent);
+          } else {
+            return repondre("❌ No valid contacts found in saved files.");
+          }
+        }
+      }
+      // If no contacts in progress, check for contacts.txt as last resort
       else {
         await repondre("🔍 Checking for contacts information...");
 
