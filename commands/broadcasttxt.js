@@ -161,21 +161,12 @@ function parseContacts(content) {
   return contacts;
 }
 
-// Check if number is registered on WhatsApp
-async function isRegisteredOnWhatsApp(client, phoneNumber) {
-  try {
-    const [result] = await client.onWhatsApp(phoneNumber + "@s.whatsapp.net");
-    return result && result.exists;
-  } catch (error) {
-    console.error(`Error checking if ${phoneNumber} is registered:`, error);
-    return false;
-  }
-}
+// Function removed as we're not checking WhatsApp registration anymore
 
 // Get random interval between messages
 function getRandomInterval() {
-  // Random interval between 30 seconds and 1.8 minutes (108 seconds)
-  return Math.floor(Math.random() * (108000 - 30000 + 1) + 30000);
+  // Random interval between 50 seconds and 1.5 minutes (90 seconds)
+  return Math.floor(Math.random() * (90000 - 50000 + 1) + 50000);
 }
 
 // Save progress state locally and to GitHub
@@ -455,8 +446,6 @@ keith({
 
       // Initialize stats
       let successCount = progress.stats?.successCount || 0;
-      let registeredCount = progress.stats?.registeredCount || 0;
-      let notRegisteredCount = progress.stats?.notRegisteredCount || 0;
       let alreadyMessagedCount = progress.stats?.alreadyMessagedCount || 0;
 
       // Resume from the saved index
@@ -513,8 +502,6 @@ keith({
         // Save progress after each contact with updated stats
         const stats = {
           successCount,
-          registeredCount,
-          notRegisteredCount,
           alreadyMessagedCount
         };
         await saveProgress(i + 1, contacts, stats);
@@ -551,8 +538,6 @@ keith({
         totalContacts: contacts.length,
         stats: {
           successCount,
-          registeredCount,
-          notRegisteredCount,
           alreadyMessagedCount
         },
         isActive: false
@@ -620,14 +605,10 @@ keith({
     // Initialize empty progress
     await saveProgress(0, contacts, {
       successCount: 0,
-      registeredCount: 0,
-      notRegisteredCount: 0,
       alreadyMessagedCount: 0
     });
 
     let successCount = 0;
-    let registeredCount = 0;
-    let notRegisteredCount = 0;
     let alreadyMessagedCount = 0;
 
     for (let i = 0; i < contacts.length; i++) {
@@ -643,41 +624,29 @@ keith({
         if ((i + 1) % 20 === 0 || i === contacts.length - 1) {
           await repondre(`📊 Progress: ${i + 1}/${contacts.length} contacts processed\n` +
                         `✅ Successful: ${successCount}\n` +
-                        `📱 Registered on WhatsApp: ${registeredCount}\n` +
-                        `❌ Not registered: ${notRegisteredCount}\n` +
                         `⏭️ Already messaged: ${alreadyMessagedCount}`);
         }
         continue;
       }
 
-      // Check if registered on WhatsApp
-      const isRegistered = await isRegisteredOnWhatsApp(client, contact.phoneNumber);
+      // Format name properly (first name or full name)
+      const firstName = contact.name.split(' ')[0].replace(/[^a-zA-Z0-9]/g, '');
+      const displayName = firstName || contact.name || "there";
 
-      if (isRegistered) {
-        registeredCount++;
+      // Compose message
+      const message = `Hello ${displayName}! I'm NICHOLAS, another status viewer. Can we be friends? Please save my number. Your contact is already saved in my phone.`;
 
-        // Format name properly (first name or full name)
-        const firstName = contact.name.split(' ')[0].replace(/[^a-zA-Z0-9]/g, '');
-        const displayName = firstName || contact.name || "there";
+      try {
+        // Send message
+        await client.sendMessage(contact.phoneNumber + "@s.whatsapp.net", { text: message });
+        successCount++;
 
-        // Compose message
-        const message = `Hello ${displayName}! I'm NICHOLAS, another status viewer. Can we be friends? Please save my number. Your contact is already saved in my phone.`;
+        // Log as messaged
+        await logMessaged(contact.phoneNumber);
 
-        try {
-          // Send message
-          await client.sendMessage(contact.phoneNumber + "@s.whatsapp.net", { text: message });
-          successCount++;
-
-          // Log as messaged
-          await logMessaged(contact.phoneNumber);
-
-          console.log(`Message sent to ${contact.phoneNumber} (${contact.name})`);
-        } catch (error) {
-          console.error(`Failed to send message to ${contact.phoneNumber}:`, error);
-        }
-      } else {
-        notRegisteredCount++;
-        console.log(`${contact.phoneNumber} is not registered on WhatsApp`);
+        console.log(`Message sent to ${contact.phoneNumber} (${contact.name})`);
+      } catch (error) {
+        console.error(`Failed to send message to ${contact.phoneNumber}:`, error);
       }
 
       // Save progress after each contact with updated stats
@@ -693,8 +662,6 @@ keith({
       if ((i + 1) % 20 === 0 || i === contacts.length - 1) {
         await repondre(`📊 Progress: ${i + 1}/${contacts.length} contacts processed\n` +
                       `✅ Successful: ${successCount}\n` +
-                      `📱 Registered on WhatsApp: ${registeredCount}\n` +
-                      `❌ Not registered: ${notRegisteredCount}\n` +
                       `⏭️ Already messaged: ${alreadyMessagedCount}`);
       }
 
@@ -710,8 +677,6 @@ keith({
     await repondre(`🎉 Broadcast completed!\n` +
                   `📊 Total contacts: ${contacts.length}\n` +
                   `✅ Successfully sent: ${successCount}\n` +
-                  `📱 Registered on WhatsApp: ${registeredCount}\n` +
-                  `❌ Not registered: ${notRegisteredCount}\n` +
                   `⏭️ Already messaged: ${alreadyMessagedCount}`);
 
     // Mark as inactive in progress file
