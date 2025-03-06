@@ -53,7 +53,18 @@ keith({
         message += `*File:* ${file}\n`;
         message += `*Status:* ${isActive ? "🟢 Active" : "🔴 Inactive"}\n`;
         message += `*Last Updated:* ${formatDate(timestamp)}\n`;
-        message += `*Progress:* ${current}/${total} (${percent}%)\n\n`;
+        message += `*Progress:* ${current}/${total} (${percent}%)\n`;
+        
+        // Show stats if available
+        if (progressData.stats) {
+          if (progressData.stats.successCount !== undefined) {
+            message += `*Successfully sent:* ${progressData.stats.successCount}\n`;
+          }
+          if (progressData.stats.alreadyMessagedCount !== undefined) {
+            message += `*Already messaged:* ${progressData.stats.alreadyMessagedCount}\n`;
+          }
+        }
+        message += "\n";
       } catch (error) {
         message += `*File:* ${file}\n`;
         message += `*Error:* Could not parse file (${error.message})\n\n`;

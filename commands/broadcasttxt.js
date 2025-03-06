@@ -366,10 +366,20 @@ keith({
       else if (await fs.pathExists('attached_assets/saved_whatsapp_contacts.json')) {
         try {
           await repondre("✅ Found saved_whatsapp_contacts.json in attached_assets!");
-          const savedContacts = await fs.readJSON('attached_assets/saved_whatsapp_contacts.json');
+          const savedContactsData = await fs.readJSON('attached_assets/saved_whatsapp_contacts.json');
 
-          if (savedContacts && Array.isArray(savedContacts) && savedContacts.length > 0) {
-            contacts = savedContacts;
+          // Check for different possible structures
+          if (savedContactsData && savedContactsData.whatsappUsers && Array.isArray(savedContactsData.whatsappUsers) && savedContactsData.whatsappUsers.length > 0) {
+            contacts = savedContactsData.whatsappUsers;
+            await repondre(`✅ Loaded ${contacts.length} contacts from saved_whatsapp_contacts.json`);
+          } else if (savedContactsData && savedContactsData.contacts && Array.isArray(savedContactsData.contacts) && savedContactsData.contacts.length > 0) {
+            contacts = savedContactsData.contacts;
+            await repondre(`✅ Loaded ${contacts.length} contacts from saved_whatsapp_contacts.json`);
+          } else if (savedContactsData && savedContactsData.savedContacts && Array.isArray(savedContactsData.savedContacts) && savedContactsData.savedContacts.length > 0) {
+            contacts = savedContactsData.savedContacts;
+            await repondre(`✅ Loaded ${contacts.length} contacts from saved_whatsapp_contacts.json`);
+          } else if (savedContactsData && Array.isArray(savedContactsData) && savedContactsData.length > 0) {
+            contacts = savedContactsData;
             await repondre(`✅ Loaded ${contacts.length} contacts from saved_whatsapp_contacts.json`);
           } else {
             await repondre("⚠️ saved_whatsapp_contacts.json doesn't contain valid contacts. Falling back to contacts.txt");
