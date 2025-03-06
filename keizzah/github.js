@@ -1,4 +1,3 @@
-
 const axios = require('axios');
 const fs = require('fs-extra');
 
@@ -19,7 +18,7 @@ class GitHubAPI {
         `${this.baseURL}/repos/${owner}/${repo}/contents/${path}?ref=${branch}`,
         { headers: this.headers }
       );
-      
+
       if (response.data.content) {
         // Decode base64 content
         return Buffer.from(response.data.content, 'base64').toString('utf8');
@@ -93,7 +92,7 @@ class GitHubAPI {
       // Get remote logs
       const remoteContent = await this.getFileContent(owner, repo, path, branch);
       let remoteLogs = [];
-      
+
       if (remoteContent) {
         remoteLogs = JSON.parse(remoteContent);
       }
@@ -141,6 +140,21 @@ class GitHubAPI {
     } catch (error) {
       console.error(`Error syncing broadcast logs: ${error.message}`);
       return -1;
+    }
+  }
+
+  // Check if a file exists in the repository
+  async fileExists(owner, repo, path, branch = "main") {
+    try {
+      const response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`, {
+        headers: this.headers,
+        validateStatus: (status) => status === 200 || status === 404
+      });
+
+      return response.status === 200;
+    } catch (error) {
+      console.error(`Error checking file existence: ${error.message}`);
+      return false;
     }
   }
 }

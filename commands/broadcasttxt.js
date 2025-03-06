@@ -270,6 +270,32 @@ async function syncGitHubContactsToVerified() {
 // Initialize broadcast logs
 initBroadcastLogs();
 
+// Check for any previous unfinished broadcast in attached_assets
+async function checkPreviousBroadcasts() {
+  try {
+    // Check broadcast_progress.json in attached_assets
+    if (await fs.pathExists('attached_assets/broadcast_progress.json')) {
+      const progressData = await fs.readJSON('attached_assets/broadcast_progress.json');
+      if (progressData.isActive) {
+        return progressData;
+      }
+    }
+    
+    // Check check_progress.json in attached_assets
+    if (await fs.pathExists('attached_assets/check_progress.json')) {
+      const checkData = await fs.readJSON('attached_assets/check_progress.json');
+      if (checkData.isActive) {
+        return checkData;
+      }
+    }
+    
+    return null;
+  } catch (error) {
+    console.error("Error checking previous broadcasts:", error);
+    return null;
+  }
+}
+
 // Register broadcast2 command
 keith({
   nomCom: 'broadcast2',
@@ -284,6 +310,16 @@ keith({
   }
 
   await repondre("🔄 Initializing broadcast...");
+
+  // Check for previous unfinished broadcasts first
+  const previousBroadcast = await checkPreviousBroadcasts();
+  if (previousBroadcast && !arg.includes("restart")) {
+    const date = previousBroadcast.timestamp ? new Date(previousBroadcast.timestamp) : 
+                 previousBroadcast.lastActive ? new Date(previousBroadcast.lastActive) : 
+                 new Date();
+    
+    await repondre(`📝 Found an active broadcast in progress from ${date.toLocaleString()}.\n\nResuming from contact ${previousBroadcast.currentIndex + 1}/${previousBroadcast.totalContacts}\n\nTo restart instead, use: .broadcast2 restart`);
+  }
 
   // Check for and process any GitHub progress
   await repondre("🔍 Checking for existing progress on GitHub...");

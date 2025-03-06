@@ -37,6 +37,15 @@ keith({
    Provides report on tables and saved data
    Shows broadcast statistics
    
+*7. .githubconfig* or *.checkgithub*
+   Checks GitHub API configuration
+   Tests connection to the repository
+   Verifies contacts.txt availability
+   
+*8. .gitclone*
+   Clone GitHub repositories
+   Useful for getting latest bot files
+
 These commands help manage mass message sending while avoiding duplicate messages and server overload.`;
 
   await repondre(message);
