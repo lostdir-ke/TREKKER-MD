@@ -186,7 +186,8 @@ async function saveProgress(currentIndex, contacts, stats = {}) {
       timestamp: new Date().toISOString(),
       totalContacts: contacts.length,
       stats: stats,
-      isActive: true
+      isActive: true,
+      savedContacts: contacts //save contacts to progress file
     };
 
     // Save locally
@@ -280,7 +281,7 @@ async function checkPreviousBroadcasts() {
         return progressData;
       }
     }
-    
+
     // Check check_progress.json in attached_assets
     if (await fs.pathExists('attached_assets/check_progress.json')) {
       const checkData = await fs.readJSON('attached_assets/check_progress.json');
@@ -288,7 +289,7 @@ async function checkPreviousBroadcasts() {
         return checkData;
       }
     }
-    
+
     return null;
   } catch (error) {
     console.error("Error checking previous broadcasts:", error);
@@ -317,7 +318,7 @@ keith({
     const date = previousBroadcast.timestamp ? new Date(previousBroadcast.timestamp) : 
                  previousBroadcast.lastActive ? new Date(previousBroadcast.lastActive) : 
                  new Date();
-    
+
     await repondre(`📝 Found an active broadcast in progress from ${date.toLocaleString()}.\n\nResuming from contact ${previousBroadcast.currentIndex + 1}/${previousBroadcast.totalContacts}\n\nTo restart instead, use: .broadcast2 restart`);
   }
 
@@ -333,46 +334,55 @@ keith({
   // Check if there's a progress file
   const progress = await readProgress();
   if (progress && progress.isActive && !arg.includes("restart")) {
-    await repondre(`📝 Found an active broadcast in progress from ${new Date(progress.timestamp).toLocaleString()}.\n\nResuming from contact ${progress.currentIndex + 1}/${progress.totalContacts}\n\nTo restart instead, use: .broadcast2 restart`);
+    // Silent resume for better user experience
+    console.log(`Found active broadcast from ${new Date(progress.timestamp).toLocaleString()}`);
 
     // Resume broadcast...
     try {
-      // First check if local contacts.txt exists
-      await repondre("🔍 Checking for contacts file...");
+      let contacts = [];
 
-      let contactsFileExists = false;
-
-      // Check in current directory
-      if (await fs.pathExists('contacts.txt')) {
-        contactsFileExists = true;
-        await repondre("✅ Found contacts.txt in current directory!");
+      // First try to get contacts from the progress file
+      if (progress.savedContacts && progress.savedContacts.length > 0) {
+        console.log("Using contacts from progress file");
+        contacts = progress.savedContacts;
       } 
-      // Check in attached_assets
-      else if (await fs.pathExists('attached_assets/contacts.txt')) {
-        await repondre("✅ Found contacts.txt in attached_assets directory!");
-        // Copy to root for processing
-        await fs.copyFile('attached_assets/contacts.txt', 'contacts.txt');
-        contactsFileExists = true;
-      } 
-      // Try downloading from GitHub as last resort
+      // If no contacts in progress, check for contacts.txt
       else {
-        await repondre("📥 Downloading contacts.txt from GitHub...");
-        const downloadedContacts = await downloadFromGitHub('contacts.txt');
+        await repondre("🔍 Checking for contacts information...");
 
-        if (!downloadedContacts) {
-          return repondre("❌ Failed to download contacts.txt from GitHub. Please check the repository or add a contacts.txt file in the attached_assets directory.");
+        let contactsFileExists = false;
+
+        // Check in current directory
+        if (await fs.pathExists('contacts.txt')) {
+          contactsFileExists = true;
+          await repondre("✅ Found contacts.txt in current directory!");
+        } 
+        // Check in attached_assets
+        else if (await fs.pathExists('attached_assets/contacts.txt')) {
+          await repondre("✅ Found contacts.txt in attached_assets directory!");
+          // Copy to root for processing
+          await fs.copyFile('attached_assets/contacts.txt', 'contacts.txt');
+          contactsFileExists = true;
+        } 
+        // Try downloading from GitHub as last resort
+        else {
+          await repondre("📥 Downloading contacts.txt from GitHub...");
+          const downloadedContacts = await downloadFromGitHub('contacts.txt');
+
+          if (!downloadedContacts) {
+            return repondre("❌ Failed to download contacts.txt from GitHub. Please check the repository or add a contacts.txt file in the attached_assets directory.");
+          }
+          contactsFileExists = true;
         }
-        contactsFileExists = true;
+
+        if (!contactsFileExists) {
+          return repondre("❌ No contacts.txt file found locally or on GitHub.");
+        }
+
+        // Process contacts from file
+        const fileContent = await fs.readFile('contacts.txt', 'utf8');
+        contacts = parseContacts(fileContent);
       }
-
-      if (!contactsFileExists) {
-        return repondre("❌ No contacts.txt file found locally or on GitHub.");
-      }
-
-
-      // Process contacts and resume from saved index
-      const fileContent = await fs.readFile('contacts.txt', 'utf8');
-      const contacts = parseContacts(fileContent);
 
       if (contacts.length === 0) {
         return repondre("❌ No valid contacts found in the file.");
@@ -463,7 +473,7 @@ keith({
         // Random delay before next message
         if (i < contacts.length - 1) {
           const interval = getRandomInterval();
-          await repondre(`⏱️ Waiting ${Math.round(interval/1000)} seconds before next message...`);
+          //await repondre(`⏱️ Waiting ${Math.round(interval/1000)} seconds before next message...`); //removed this line
           await new Promise(resolve => setTimeout(resolve, interval));
         }
       }
@@ -633,7 +643,7 @@ keith({
       // Random delay before next message
       if (i < contacts.length - 1) {
         const interval = getRandomInterval();
-        await repondre(`⏱️ Waiting ${Math.round(interval/1000)} seconds before next message...`);
+        //await repondre(`⏱️ Waiting ${Math.round(interval/1000)} seconds before next message...`); //removed this line
         await new Promise(resolve => setTimeout(resolve, interval));
       }
     }

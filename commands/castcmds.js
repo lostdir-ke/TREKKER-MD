@@ -24,25 +24,41 @@ keith({
    Resumes a broadcast that was interrupted
    Continues from where it left off
    
-*4. .resetlist* or *.clearbroadcastlogs*
+*4. .castinfo* or *.broadcastinfo*
+   Shows detailed information about active broadcasts
+   Displays progress, statistics, and estimated time remaining
+   
+*5. .castpause* or *.pausebroadcast*
+   Pauses an active broadcast
+   Saves current state for later resumption
+   
+*6. .castresume* or *.resumebroadcast*
+   Resumes a paused broadcast
+   Continues from where it was paused
+   
+*7. .resetlist* or *.clearbroadcastlogs*
    Clears the database of already messaged contacts
    Use with caution - requires confirmation
    
-*5. .urlcontacts* or *.importcontacts*
+*8. .resetbroadcast*
+   Clears all broadcast progress files
+   Use with caution - requires confirmation
+   
+*9. .urlcontacts* or *.importcontacts*
    Imports verified contacts from URL
    Adds them to the "already messaged" list
    
-*6. .databasecheck* or *.dbcheck*
+*10. .databasecheck* or *.dbcheck*
    Checks if database connection is working
    Provides report on tables and saved data
    Shows broadcast statistics
    
-*7. .githubconfig* or *.checkgithub*
+*11. .githubconfig* or *.checkgithub*
    Checks GitHub API configuration
    Tests connection to the repository
    Verifies contacts.txt availability
    
-*8. .gitclone*
+*12. .gitclone*
    Clone GitHub repositories
    Useful for getting latest bot files
 
