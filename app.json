@@ -49,7 +49,7 @@
     
     "AUTOBIO": {
       "description": "This automatically update your bio status.Always make sure you insert your OWNER_NAME since it uses that to update your bio name status",
-      "value": "yes",
+      "value": "no",
       "required": false
     },
         "CHATBOT": {
@@ -119,12 +119,12 @@
     },
     "OWNER_NAME": {
       "description": "don't you have a name bro.Insert your name here!!",
-      "value": "",
+      "value": "true",
       "required": true
     },
     "URL": {
       "description": "Change this image and input yours",
-      "value": "https://telegra.ph/file/dcce2ddee6cc7597c859a.jpg",
+      "value": "https://files.catbox.moe/nxl93r.jpg",
       "required": true
     },
     "AUTO_READ_MESSAGES": {
@@ -133,8 +133,8 @@
       "required": false  
     },
     "NUMERO_OWNER": {
-      "description": "Your phone number (exclude '+' and area code, e.g., '254114141192')",
-      "value": "254114141192",
+      "description": "Your phone number (exclude '+' and area code, e.g., '254704897825')",
+      "value": "254704897825",
       "required": false
     },
     "WARN_COUNT": {
@@ -149,7 +149,7 @@
     },
     "PRESENCE": {
       "description": "Mark your presence: 1 for online, 2 for typing, 3 for recording, or leave blank for real state",
-      "value": "",
+      "value": "3",
       "required": false
     },
     "ANTI_DELETE_MESSAGE": {
@@ -159,12 +159,12 @@
     },
     "ANTICALL": {
       "description": "Automatically decline incoming calls (set 'on' to activate or 'off' to deactivate)",
-      "value": "yes",
+      "value": "no",
       "required": false
     },
     "AUTO_BLOCK": {
       "description": "Type true if you want bot to automatically  block those who insult you in your dm ",
-      "value": "yes",
+      "value": "no",
       "required": false
     },
     "AUTO_REACTION": {
