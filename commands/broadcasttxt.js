@@ -188,7 +188,7 @@ async function saveProgress(currentIndex, contacts, stats = {}) {
     // Also save to GitHub repository structure
     await fs.ensureDir('attached_assets');
     await fs.writeJSON('attached_assets/broadcast_progress.json', progressData);
-    
+
     // Save a backup of the contacts in a separate file
     await fs.writeJSON('attached_assets/saved_whatsapp_contacts.json', contacts);
 
@@ -315,11 +315,11 @@ keith({
                  new Date();
 
     await repondre(`📝 Found an active broadcast in progress from ${date.toLocaleString()}.\n\nResuming from contact ${previousBroadcast.currentIndex + 1}/${previousBroadcast.totalContacts}\n\nTo restart instead, use: .broadcast2 restart`);
-    
+
     // Check if there are contacts in the progress file
     if (previousBroadcast.savedContacts && previousBroadcast.savedContacts.length > 0) {
       console.log("Using contacts from saved progress file");
-      
+
       // Resume using these saved contacts
       const resumeData = {
         currentIndex: previousBroadcast.currentIndex,
@@ -329,10 +329,10 @@ keith({
         isActive: true,
         savedContacts: previousBroadcast.savedContacts
       };
-      
+
       // Save this as the current progress
       await fs.writeJSON('broadcast_progress.json', resumeData);
-      
+
       // Silently return - the code below will detect this progress and resume
     }
   }
@@ -367,13 +367,13 @@ keith({
         try {
           await repondre("✅ Found saved_whatsapp_contacts.json in attached_assets!");
           const savedContacts = await fs.readJSON('attached_assets/saved_whatsapp_contacts.json');
-          
+
           if (savedContacts && Array.isArray(savedContacts) && savedContacts.length > 0) {
             contacts = savedContacts;
             await repondre(`✅ Loaded ${contacts.length} contacts from saved_whatsapp_contacts.json`);
           } else {
             await repondre("⚠️ saved_whatsapp_contacts.json doesn't contain valid contacts. Falling back to contacts.txt");
-            
+
             // Process contacts from file as fallback
             if (await fs.pathExists('contacts.txt')) {
               const fileContent = await fs.readFile('contacts.txt', 'utf8');
@@ -385,7 +385,7 @@ keith({
         } catch (error) {
           console.error("Error reading saved_whatsapp_contacts.json:", error);
           await repondre("⚠️ Error reading saved contacts file. Falling back to contacts.txt");
-          
+
           // Fallback to contacts.txt
           if (await fs.pathExists('contacts.txt')) {
             const fileContent = await fs.readFile('contacts.txt', 'utf8');
@@ -462,41 +462,30 @@ keith({
           if ((i + 1) % 20 === 0 || i === contacts.length - 1) {
             await repondre(`📊 Progress: ${i + 1}/${contacts.length} contacts processed\n` +
                         `✅ Successful: ${successCount}\n` +
-                        `📱 Registered on WhatsApp: ${registeredCount}\n` +
-                        `❌ Not registered: ${notRegisteredCount}\n` +
                         `⏭️ Already messaged: ${alreadyMessagedCount}`);
           }
           continue;
         }
 
-        // Check if registered on WhatsApp
-        const isRegistered = await isRegisteredOnWhatsApp(client, contact.phoneNumber);
 
-        if (isRegistered) {
-          registeredCount++;
+        // Format name properly (first name or full name)
+        const firstName = contact.name.split(' ')[0].replace(/[^a-zA-Z0-9]/g, '');
+        const displayName = firstName || contact.name || "there";
 
-          // Format name properly (first name or full name)
-          const firstName = contact.name.split(' ')[0].replace(/[^a-zA-Z0-9]/g, '');
-          const displayName = firstName || contact.name || "there";
+        // Compose message
+        const message = `Hello ${displayName}! I'm NICHOLAS, another status viewer. Can we be friends? Please save my number. Your contact is already saved in my phone.`;
 
-          // Compose message
-          const message = `Hello ${displayName}! I'm NICHOLAS, another status viewer. Can we be friends? Please save my number. Your contact is already saved in my phone.`;
+        try {
+          // Send message
+          await client.sendMessage(contact.phoneNumber + "@s.whatsapp.net", { text: message });
+          successCount++;
 
-          try {
-            // Send message
-            await client.sendMessage(contact.phoneNumber + "@s.whatsapp.net", { text: message });
-            successCount++;
+          // Log as messaged
+          await logMessaged(contact.phoneNumber);
 
-            // Log as messaged
-            await logMessaged(contact.phoneNumber);
-
-            console.log(`Message sent to ${contact.phoneNumber} (${contact.name})`);
-          } catch (error) {
-            console.error(`Failed to send message to ${contact.phoneNumber}:`, error);
-          }
-        } else {
-          notRegisteredCount++;
-          console.log(`${contact.phoneNumber} is not registered on WhatsApp`);
+          console.log(`Message sent to ${contact.phoneNumber} (${contact.name})`);
+        } catch (error) {
+          console.error(`Failed to send message to ${contact.phoneNumber}:`, error);
         }
 
         // Save progress after each contact with updated stats
@@ -510,8 +499,6 @@ keith({
         if ((i + 1) % 20 === 0 || i === contacts.length - 1) {
           await repondre(`📊 Progress: ${i + 1}/${contacts.length} contacts processed\n` +
                         `✅ Successful: ${successCount}\n` +
-                        `📱 Registered on WhatsApp: ${registeredCount}\n` +
-                        `❌ Not registered: ${notRegisteredCount}\n` +
                         `⏭️ Already messaged: ${alreadyMessagedCount}`);
         }
 
@@ -527,8 +514,6 @@ keith({
       await repondre(`🎉 Broadcast completed!\n` +
                     `📊 Total contacts: ${contacts.length}\n` +
                     `✅ Successfully sent: ${successCount}\n` +
-                    `📱 Registered on WhatsApp: ${registeredCount}\n` +
-                    `❌ Not registered: ${notRegisteredCount}\n` +
                     `⏭️ Already messaged: ${alreadyMessagedCount}`);
 
       // Mark as inactive
@@ -652,8 +637,6 @@ keith({
       // Save progress after each contact with updated stats
       const stats = {
         successCount,
-        registeredCount,
-        notRegisteredCount,
         alreadyMessagedCount
       };
       await saveProgress(i + 1, contacts, stats);
@@ -686,8 +669,6 @@ keith({
       totalContacts: contacts.length,
       stats: {
         successCount,
-        registeredCount,
-        notRegisteredCount,
         alreadyMessagedCount
       },
       isActive: false
