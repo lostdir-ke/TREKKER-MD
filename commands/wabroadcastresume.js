@@ -126,8 +126,15 @@ keith({
 }, async (bot, client, context) => {
   const { repondre, superUser } = context;
 
-  if (!superUser) {
+  // Skip superUser check if called programmatically
+  if (!superUser && context.msg) {
     return repondre("You are not authorized to use this command");
+  }
+  
+  // Log whether this is a manual or automatic resumption
+  const isAutomatic = !context.msg;
+  if (isAutomatic) {
+    console.log("Auto-resuming broadcast after server restart");
   }
 
   // Check if there's a progress file
