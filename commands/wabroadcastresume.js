@@ -84,8 +84,8 @@ async function isRegisteredOnWhatsApp(client, phoneNumber) {
 
 // Get random interval between messages
 function getRandomInterval() {
-  // Random interval between 30 seconds and 1.8 minutes (108 seconds)
-  return Math.floor(Math.random() * (108000 - 30000 + 1) + 30000);
+  // Random interval between 25 seconds and 1.2 minutes (72 seconds)
+  return Math.floor(Math.random() * (72000 - 25000 + 1) + 25000);
 }
 
 // Save progress state
