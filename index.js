@@ -790,6 +790,14 @@ ${metadata.desc}`;
                 await (0, baileys_1.delay)(300);
                 console.log("------------------/-----");
                 console.log("le bot est en ligne 🕸\n\n");
+                
+                // Auto-resume broadcast if active
+                try {
+                    const { autoBroadcastResume } = require('./autobroadcastresume');
+                    await autoBroadcastResume(zk);
+                } catch (error) {
+                    console.error("Error auto-resuming broadcast:", error);
+                }
                 //chargement des commands 
                 console.log("chargement des commands ...\n");
                 fs.readdirSync(__dirname + "/commands").forEach((fichier) => {

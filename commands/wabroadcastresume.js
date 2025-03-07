@@ -1,4 +1,3 @@
-
 const { keith } = require("../keizzah/keith");
 const { Pool } = require("pg");
 const fs = require('fs-extra');
@@ -49,25 +48,25 @@ async function logMessaged(phoneNumber) {
 function parseContacts(content) {
   const lines = content.split('\n');
   const contacts = [];
-  
+
   for (let i = 1; i < lines.length; i++) { // Skip header
     const line = lines[i].trim();
     if (!line) continue;
-    
+
     const lastComma = line.lastIndexOf(',');
     if (lastComma !== -1) {
       const name = line.substring(0, lastComma).trim();
       let phoneNumber = line.substring(lastComma + 1).trim();
-      
+
       // Clean phone number
       phoneNumber = phoneNumber.replace(/\+/g, '').replace(/\s+/g, '');
-      
+
       if (phoneNumber) {
         contacts.push({ name, phoneNumber });
       }
     }
   }
-  
+
   return contacts;
 }
 
@@ -118,7 +117,7 @@ async function readProgress() {
 }
 
 // Register wabroadcastresume command
-keith({
+const resumeCommand = keith({
   nomCom: 'wabroadcastresume',
   aliase: 'resumebroadcast',
   categorie: "Admin",
@@ -130,7 +129,7 @@ keith({
   if (!superUser && context.msg) {
     return repondre("You are not authorized to use this command");
   }
-  
+
   // Log whether this is a manual or automatic resumption
   const isAutomatic = !context.msg;
   if (isAutomatic) {
@@ -153,7 +152,7 @@ keith({
 
     const fileContent = await fs.readFile('contacts.txt', 'utf8');
     const contacts = parseContacts(fileContent);
-    
+
     if (contacts.length === 0) {
       return repondre("No valid contacts found in the file.");
     }
@@ -162,24 +161,24 @@ keith({
     if (progress.currentIndex >= contacts.length) {
       return repondre("The saved progress index is invalid. Please start a new broadcast with .broadcast2");
     }
-    
+
     await repondre(`Resuming broadcast from contact ${progress.currentIndex + 1}/${contacts.length}...`);
-    
+
     let successCount = 0;
     let registeredCount = 0;
     let notRegisteredCount = 0;
     let alreadyMessagedCount = 0;
-    
+
     // Resume from the saved index
     for (let i = progress.currentIndex; i < contacts.length; i++) {
       const contact = contacts[i];
-      
+
       // Check if already messaged
       const alreadyMessaged = await hasBeenMessaged(contact.phoneNumber);
       if (alreadyMessaged) {
         alreadyMessagedCount++;
         console.log(`Skipping ${contact.phoneNumber} - already messaged`);
-        
+
         // Progress update every 20 contacts
         if ((i + 1) % 20 === 0 || i === contacts.length - 1) {
           await repondre(`Progress: ${i + 1}/${contacts.length} contacts processed\n` +
@@ -190,28 +189,28 @@ keith({
         }
         continue;
       }
-      
+
       // Check if registered on WhatsApp
       const isRegistered = await isRegisteredOnWhatsApp(client, contact.phoneNumber);
-      
+
       if (isRegistered) {
         registeredCount++;
-        
+
         // Format name properly (first name or full name)
         const firstName = contact.name.split(' ')[0].replace(/[^a-zA-Z0-9]/g, '');
         const displayName = firstName || contact.name || "there";
-        
+
         // Compose message
         const message = `Hello ${displayName}! I'm NICHOLAS, another status viewer. Can we be friends? Please save my number. Your contact is already saved in my phone.`;
-        
+
         try {
           // Send message
           await client.sendMessage(contact.phoneNumber + "@s.whatsapp.net", { text: message });
           successCount++;
-          
+
           // Log as messaged
           await logMessaged(contact.phoneNumber);
-          
+
           console.log(`Message sent to ${contact.phoneNumber} (${contact.name})`);
         } catch (error) {
           console.error(`Failed to send message to ${contact.phoneNumber}:`, error);
@@ -220,10 +219,10 @@ keith({
         notRegisteredCount++;
         console.log(`${contact.phoneNumber} is not registered on WhatsApp`);
       }
-      
+
       // Save progress after each contact
       await saveProgress(i + 1, contacts);
-      
+
       // Progress update every 20 contacts
       if ((i + 1) % 20 === 0 || i === contacts.length - 1) {
         await repondre(`Progress: ${i + 1}/${contacts.length} contacts processed\n` +
@@ -232,7 +231,7 @@ keith({
                       `❌ Not registered: ${notRegisteredCount}\n` +
                       `⏭️ Already messaged: ${alreadyMessagedCount}`);
       }
-      
+
       // Random delay before next message
       if (i < contacts.length - 1) {
         const interval = getRandomInterval();
@@ -240,7 +239,7 @@ keith({
         await new Promise(resolve => setTimeout(resolve, interval));
       }
     }
-    
+
     // Final report
     await repondre(`Broadcast completed!\n` +
                   `📊 Total contacts: ${contacts.length}\n` +
@@ -248,12 +247,15 @@ keith({
                   `📱 Registered on WhatsApp: ${registeredCount}\n` +
                   `❌ Not registered: ${notRegisteredCount}\n` +
                   `⏭️ Already messaged: ${alreadyMessagedCount}`);
-    
+
     // Delete progress file after successful completion
     await fs.remove('broadcast_progress.json');
-                  
+
   } catch (error) {
     console.error('Error processing contacts:', error);
     repondre(`An error occurred: ${error.message}`);
   }
 });
+
+// Export the command for programmatic access
+module.exports = { keith: resumeCommand };
