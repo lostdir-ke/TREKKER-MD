@@ -106,7 +106,14 @@ setTimeout(() => {
             syncFullHistory: true,
             generateHighQualityLinkPreview: true,
             markOnlineOnConnect: false,
-            keepAliveIntervalMs: 30_000,
+            keepAliveIntervalMs: 20_000, // Reduced to 20 seconds for more frequent pings
+            patchMessageBeforeSending: true,
+            retryRequestDelayMs: 2000,
+            connectTimeoutMs: 60000, // Increase connection timeout to 60 seconds
+            maxRetries: 10, // Increase max retries 
+            qrTimeout: 60000, // Increase QR timeout to 60 seconds
+            emitOwnEvents: true, // Make sure own events are emitted
+            defaultQueryTimeoutMs: 60000, // Increase default query timeout
             /* auth: state*/ auth: {
                 creds: state.creds,
                 /** caching makes the store faster to send/recv messages */
@@ -115,8 +122,15 @@ setTimeout(() => {
             //////////
             getMessage: async (key) => {
                 if (store) {
-                    const msg = await store.loadMessage(key.remoteJid, key.id, undefined);
-                    return msg.message || undefined;
+                    try {
+                        const msg = await store.loadMessage(key.remoteJid, key.id, undefined);
+                        return msg?.message || undefined;
+                    } catch (err) {
+                        console.error("Error loading message:", err);
+                        return {
+                            conversation: 'An Error Occurred, Repeat Command!'
+                        };
+                    }
                 }
                 return {
                     conversation: 'An Error Occurred, Repeat Command!'
@@ -798,6 +812,18 @@ ${metadata.desc}`;
                 } catch (error) {
                     console.error("Error auto-resuming broadcast:", error);
                 }
+                
+                // Setup a heartbeat to keep the connection alive
+                const heartbeatInterval = setInterval(() => {
+                    try {
+                        if (zk.user && zk.user.id) {
+                            zk.sendPresenceUpdate('available', zk.user.id.split(':')[0] + '@s.whatsapp.net');
+                            console.log("📶 Connection heartbeat sent");
+                        }
+                    } catch (err) {
+                        console.error("Heartbeat error:", err);
+                    }
+                }, 40000); // Send heartbeat every 40 seconds
                 //chargement des commands 
                 console.log("chargement des commands ...\n");
                 fs.readdirSync(__dirname + "/commands").forEach((fichier) => {
@@ -873,39 +899,78 @@ ${metadata.desc}`;
                 }
             }
             else if (connection == "close") {
+                // Clear the heartbeat interval if it exists
+                if (heartbeatInterval) {
+                    clearInterval(heartbeatInterval);
+                }
+                
                 let raisonDeconnexion = new boom_1.Boom(lastDisconnect?.error)?.output.statusCode;
+                console.log(`📵 Connection closed. Disconnect reason: ${raisonDeconnexion}`);
+                
+                // Add retry count for exponential backoff
+                if (!global.retryCount) global.retryCount = 0;
+                else global.retryCount++;
+                
+                // Calculate backoff time (capped at 60 seconds)
+                const backoffTime = Math.min(Math.pow(2, global.retryCount) * 1000, 60000);
+                console.log(`Attempting reconnection in ${backoffTime/1000} seconds...`);
+                
                 if (raisonDeconnexion === baileys_1.DisconnectReason.badSession) {
                     console.log('Session id érronée veuillez rescanner le qr svp ...');
+                    // Reset retry count for permanent errors
+                    global.retryCount = 0;
+                    // Try recreation of auth files
+                    try {
+                        fs.unlinkSync(__dirname + "/auth/creds.json");
+                        authentification();
+                    } catch (error) {
+                        console.log("Error cleaning auth files:", error);
+                    }
+                    setTimeout(() => main(), backoffTime);
                 }
                 else if (raisonDeconnexion === baileys_1.DisconnectReason.connectionClosed) {
                     console.log('!!! connexion fermée, reconnexion en cours ...');
-                    main();
+                    setTimeout(() => main(), backoffTime);
                 }
                 else if (raisonDeconnexion === baileys_1.DisconnectReason.connectionLost) {
                     console.log('connexion au serveur perdue 😞 ,,, reconnexion en cours ... ');
-                    main();
+                    setTimeout(() => main(), backoffTime);
                 }
                 else if (raisonDeconnexion === baileys_1.DisconnectReason?.connectionReplaced) {
                     console.log('connexion réplacée ,,, une sesssion est déjà ouverte veuillez la fermer svp !!!');
+                    global.retryCount = 0; // Reset for permanent error
+                    setTimeout(() => main(), backoffTime);
                 }
                 else if (raisonDeconnexion === baileys_1.DisconnectReason.loggedOut) {
                     console.log('vous êtes déconnecté,,, veuillez rescanner le code qr svp');
+                    // Reset retry count for permanent errors
+                    global.retryCount = 0;
+                    // Try recreation of auth files
+                    try {
+                        fs.unlinkSync(__dirname + "/auth/creds.json");
+                        authentification();
+                    } catch (error) {
+                        console.log("Error cleaning auth files:", error);
+                    }
+                    setTimeout(() => main(), backoffTime);
                 }
                 else if (raisonDeconnexion === baileys_1.DisconnectReason.restartRequired) {
                     console.log('redémarrage en cours ▶️');
-                    main();
-                }   else {
-
-                    console.log('redemarrage sur le coup de l\'erreur  ',raisonDeconnexion) ;         
-                    //repondre("* Redémarrage du bot en cour ...*");
-
-                                const {exec}=require("child_process") ;
-
-                                exec("pm2 restart all");            
+                    setTimeout(() => main(), 1000); // Quick restart for this specific reason
+                } else {
+                    console.log('redemarrage sur le coup de l\'erreur ',raisonDeconnexion);
+                    
+                    // If we've tried too many times, use pm2 restart as a last resort
+                    if (global.retryCount > 5) {
+                        console.log("Too many reconnection attempts, using PM2 to restart completely");
+                        const {exec} = require("child_process");
+                        exec("pm2 restart all");
+                        global.retryCount = 0;
+                    } else {
+                        setTimeout(() => main(), backoffTime);
+                    }
                 }
-                // sleep(50000)
-                console.log("hum " + connection);
-                main(); //console.log(session)
+                console.log("Connection status: " + connection);
             }
         });
         //fin événement connexion
