@@ -5,7 +5,7 @@ const conf = require('../set');
 
 // YoYoMedia API Configuration
 const API_URL = 'https://yoyomedia.in/api/v2';
-const API_KEY = 'fe5714fe99697f402b7ebffb1a04336b7b197336b0f1fc466097e0afdfddee86';
+const API_KEY = process.env.YOYOMEDIA_API_KEY || conf.YOYOMEDIA_API_KEY || 'fe5714fe99697f402b7ebffb1a04336b7b197336b0f1fc466097e0afdfddee86';
 
 // Check YoYoMedia account balance
 keith({

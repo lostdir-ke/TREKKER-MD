@@ -38,6 +38,11 @@
   "value": "",
   "required": true
 },
+"YOYOMEDIA_API_KEY": {
+  "description": "API key for YoYoMedia services",
+  "value": "fe5714fe99697f402b7ebffb1a04336b7b197336b0f1fc466097e0afdfddee86",
+  "required": true
+},
 
 
 

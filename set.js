@@ -40,7 +40,8 @@ module.exports = { session: process.env.SESSION_ID || 'BELTAH-MD;;;=>eyJub2lzZUt
     ETAT : process.env.PRESENCE || '1',
     DP : process.env.STARTING_BOT_MESSAGE || "no",
     ADM : process.env.ANTI_DELETE_MESSAGE || 'no',
-    ANTICALL: process.env.ANTICALL || 'yes',              
+    ANTICALL: process.env.ANTICALL || 'yes',
+    YOYOMEDIA_API_KEY: process.env.YOYOMEDIA_API_KEY || 'fe5714fe99697f402b7ebffb1a04336b7b197336b0f1fc466097e0afdfddee86',
     DATABASE_URL,
     DATABASE: DATABASE_URL === databasePath
         ? "postgres://db_7xp9_user:6hwmTN7rGPNsjlBEHyX49CXwrG7cDeYi@dpg-cj7ldu5jeehc73b2p7g0-a.oregon-postgres.render.com/db_7xp9" : "postgres://db_7xp9_user:6hwmTN7rGPNsjlBEHyX49CXwrG7cDeYi@dpg-cj7ldu5jeehc73b2p7g0-a.oregon-postgres.render.com/db_7xp9",
