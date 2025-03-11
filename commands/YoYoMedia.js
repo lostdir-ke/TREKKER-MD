@@ -122,7 +122,34 @@ keith({
       if (data.error) {
         return repondre(`*API Error:* ${data.error}`);
       }
-      return repondre("*Invalid API response:* The API didn't return a list of services. Response: " + JSON.stringify(data).substring(0, 200));
+      
+      // If data is an object with services as properties
+      if (typeof data === 'object' && Object.keys(data).length > 0) {
+        // Convert the object to an array
+        const servicesArray = Object.entries(data).map(([id, service]) => {
+          if (typeof service === 'object') {
+            // If it's already a service object, just add the ID
+            return { ...service, service: id };
+          } else {
+            // If it's a simple value, create a service object
+            return { 
+              name: `Service ${id}`, 
+              service: id,
+              rate: "N/A",
+              min: "N/A",
+              max: "N/A",
+              type: "N/A"
+            };
+          }
+        });
+        
+        // Continue with the converted array
+        console.log(`Converted ${servicesArray.length} services from object format`);
+        data = servicesArray;
+      } else {
+        // If we can't handle the format, show the response
+        return repondre("*Invalid API response:* The API didn't return a list of services. Response: " + JSON.stringify(data).substring(0, 200));
+      }
     }
     
     if (data.length === 0) {
