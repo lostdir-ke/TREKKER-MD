@@ -99,9 +99,14 @@ keith({
   }
   
   try {
+    // Log the API key being used (for debugging)
+    console.log(`Using API key for services: ${API_KEY.substring(0, 10)}...`);
+    
     const formData = new URLSearchParams();
     formData.append('key', API_KEY);
     formData.append('action', 'services');
+    
+    console.log("Sending services request to:", API_URL);
     
     const response = await axios.post(API_URL, formData, {
       headers: {
@@ -110,6 +115,19 @@ keith({
     });
     
     const data = response.data;
+    console.log("API Response:", typeof data, Array.isArray(data) ? data.length : 'not array', JSON.stringify(data).substring(0, 100));
+    
+    // Check if data is valid and contains services
+    if (!Array.isArray(data)) {
+      if (data.error) {
+        return repondre(`*API Error:* ${data.error}`);
+      }
+      return repondre("*Invalid API response:* The API didn't return a list of services. Response: " + JSON.stringify(data).substring(0, 200));
+    }
+    
+    if (data.length === 0) {
+      return repondre("*No services available:* The API returned an empty list of services.");
+    }
     
     // Filter by category if provided
     const categoryFilter = arg.length > 0 ? arg.join(' ').toLowerCase() : null;
@@ -121,7 +139,7 @@ keith({
       );
       
       if (filteredServices.length === 0) {
-        return repondre(`No services found for category: *${categoryFilter}*`);
+        return repondre(`No services found for category: *${categoryFilter}*\n\nAvailable categories: ${[...new Set(data.map(s => s.Category))].join(', ')}`);
       }
     }
     
@@ -163,8 +181,16 @@ keith({
     }, { quoted: ms });
     
   } catch (error) {
-    console.error("Error fetching services:", error);
-    repondre("*Error:* Failed to fetch services list. Please try again later.");
+    console.error("Error fetching services:", error.response?.data || error.message);
+    
+    // Provide more detailed error message
+    if (error.response) {
+      repondre(`*API Error:* Status ${error.response.status} - ${JSON.stringify(error.response.data)}`);
+    } else if (error.request) {
+      repondre("*Network Error:* No response received from API server. Check your internet connection.");
+    } else {
+      repondre(`*Error:* ${error.message}. Failed to fetch services list.`);
+    }
   }
 });
 
