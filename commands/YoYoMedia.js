@@ -25,21 +25,39 @@ keith({
     // Log API key being used (for debugging)
     console.log(`Using API key: ${API_KEY.substring(0, 10)}...`);
     
-    const response = await axios.post(API_URL, {
-      key: API_KEY,
-      action: 'balance'
+    // Log the request for debugging
+    console.log("Sending request to:", API_URL);
+    console.log("Request data:", { key: API_KEY.substring(0, 10) + "...", action: 'balance' });
+    
+    // Try with form-data format instead of JSON
+    const formData = new URLSearchParams();
+    formData.append('key', API_KEY);
+    formData.append('action', 'balance');
+    
+    const response = await axios.post(API_URL, formData, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
     });
     
     const data = response.data;
     console.log("API response:", JSON.stringify(data));
     
-    // Check if response contains balance and currency
-    if (!data || data.balance === undefined || data.currency === undefined) {
-      return repondre("*Error:* Invalid API response. Please check your API key.");
+    // Handle different response formats
+    if (data.status === false && data.error) {
+      return repondre(`*Error:* ${data.error}`);
     }
     
+    // Check if response contains balance
+    if (!data || (data.balance === undefined && !data.error)) {
+      return repondre("*API Response:* " + JSON.stringify(data).substring(0, 200) + "\n\nPlease check API key or contact provider.");
+    }
+    
+    // Set currency to default value if not provided
+    const currency = data.currency || "INR";
+    
     await zk.sendMessage(chatId, {
-      text: `*YoYoMedia Account Balance*\n\n💰 Balance: ${data.balance} ${data.currency}`,
+      text: `*YoYoMedia Account Balance*\n\n💰 Balance: ${data.balance} ${currency}`,
       contextInfo: {
         externalAdReply: {
           title: "YoYoMedia API",
@@ -81,9 +99,14 @@ keith({
   }
   
   try {
-    const response = await axios.post(API_URL, {
-      key: API_KEY,
-      action: 'services'
+    const formData = new URLSearchParams();
+    formData.append('key', API_KEY);
+    formData.append('action', 'services');
+    
+    const response = await axios.post(API_URL, formData, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
     });
     
     const data = response.data;
@@ -166,12 +189,17 @@ keith({
   }
   
   try {
-    const response = await axios.post(API_URL, {
-      key: API_KEY,
-      action: 'add',
-      service: serviceId,
-      link: link,
-      quantity: quantity
+    const formData = new URLSearchParams();
+    formData.append('key', API_KEY);
+    formData.append('action', 'add');
+    formData.append('service', serviceId);
+    formData.append('link', link);
+    formData.append('quantity', quantity);
+    
+    const response = await axios.post(API_URL, formData, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
     });
     
     const data = response.data;
@@ -221,10 +249,15 @@ keith({
   const orderId = arg[0];
   
   try {
-    const response = await axios.post(API_URL, {
-      key: API_KEY,
-      action: 'status',
-      order: orderId
+    const formData = new URLSearchParams();
+    formData.append('key', API_KEY);
+    formData.append('action', 'status');
+    formData.append('order', orderId);
+    
+    const response = await axios.post(API_URL, formData, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
     });
     
     const data = response.data;
