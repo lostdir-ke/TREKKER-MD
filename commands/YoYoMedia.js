@@ -22,12 +22,21 @@ keith({
   }
   
   try {
+    // Log API key being used (for debugging)
+    console.log(`Using API key: ${API_KEY.substring(0, 10)}...`);
+    
     const response = await axios.post(API_URL, {
       key: API_KEY,
       action: 'balance'
     });
     
     const data = response.data;
+    console.log("API response:", JSON.stringify(data));
+    
+    // Check if response contains balance and currency
+    if (!data || data.balance === undefined || data.currency === undefined) {
+      return repondre("*Error:* Invalid API response. Please check your API key.");
+    }
     
     await zk.sendMessage(chatId, {
       text: `*YoYoMedia Account Balance*\n\n💰 Balance: ${data.balance} ${data.currency}`,
@@ -44,8 +53,16 @@ keith({
     }, { quoted: ms });
     
   } catch (error) {
-    console.error("Error fetching balance:", error);
-    repondre("*Error:* Failed to fetch account balance. Please try again later.");
+    console.error("Error fetching balance:", error.response?.data || error.message);
+    
+    // Provide more detailed error message
+    if (error.response) {
+      repondre(`*API Error:* Status ${error.response.status} - ${JSON.stringify(error.response.data)}`);
+    } else if (error.request) {
+      repondre("*Network Error:* No response received from API server. Check your internet connection.");
+    } else {
+      repondre(`*Error:* ${error.message}. Failed to fetch account balance.`);
+    }
   }
 });
 
