@@ -132,10 +132,16 @@ keith({
     
     servicesToShow.forEach((service, index) => {
       servicesText += `*${index + 1}. ${service.name}*\n`;
-      servicesText += `   ID: ${service.service || service.services}\n`;
+      // Some APIs use 'service', others use 'services' for the ID
+      const serviceId = service.service || service.services;
+      servicesText += `   ID: ${serviceId}\n`;
       servicesText += `   Rate: $${service.rate}\n`;
       servicesText += `   Min: ${service.min} | Max: ${service.max}\n`;
-      servicesText += `   Type: ${service.type}\n\n`;
+      servicesText += `   Type: ${service.type}\n`;
+      if (service.Category) {
+        servicesText += `   Category: ${service.Category}\n`;
+      }
+      servicesText += `\n`;
     });
     
     if (filteredServices.length > 10) {
