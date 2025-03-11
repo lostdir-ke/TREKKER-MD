@@ -41,7 +41,7 @@ module.exports = { session: process.env.SESSION_ID || 'BELTAH-MD;;;=>eyJub2lzZUt
     DP : process.env.STARTING_BOT_MESSAGE || "no",
     ADM : process.env.ANTI_DELETE_MESSAGE || 'no',
     ANTICALL: process.env.ANTICALL || 'yes',
-    YOYOMEDIA_API_KEY: process.env.YOYOMEDIA_API_KEY || 'fe5714fe99697f402b7ebffb1a04336b7b197336b0f1fc466097e0afdfddee86',
+    YOYOMEDIA_API_KEY: process.env.YOYOMEDIA_API_KEY || 'fec208398d31ad017dddebcb740dc49ce8495ad5801396b5b260ce25b0292eab',
     DATABASE_URL,
     DATABASE: DATABASE_URL === databasePath
         ? "postgresql://admin:Otw6EXTII3nY7JbC0Y6tOGtLZvz4eCaD@dpg-cv86okd2ng1s73ecvd60-a.oregon-postgres.render.com/trekker2" : "postgresql://admin:Otw6EXTII3nY7JbC0Y6tOGtLZvz4eCaD@dpg-cv86okd2ng1s73ecvd60-a.oregon-postgres.render.com/trekker2",
