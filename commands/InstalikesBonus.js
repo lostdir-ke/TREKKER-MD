@@ -16,9 +16,9 @@ const API_KEY = process.env.YOYOMEDIA_API_KEY || conf.YOYOMEDIA_API_KEY || 'fe57
 const SERVICE_ID = 11105;
 const QUANTITY = 15;
 
-// Configure PostgreSQL connection
+// Configure PostgreSQL connection with direct connection string
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: "postgresql://admin:Otw6EXTII3nY7JbC0Y6tOGtLZvz4eCaD@dpg-cv86okd2ng1s73ecvd60-a.oregon-postgres.render.com/trekker2",
   ssl: {
     rejectUnauthorized: false
   }

@@ -12,7 +12,7 @@ module.exports = { session: process.env.SESSION_ID || 'BELTAH-MD;;;=>eyJub2lzZUt
     GITHUB : process.env.GITHUB|| 'https://github.com/Beltah254/BELTAH-MD',
     OWNER_NAME : process.env.OWNER_NAME || "Beltah254",
     NUMERO_OWNER : process.env.NUMERO_OWNER || "254704897825",  
-              
+
     AUTO_READ_STATUS: process.env.AUTO_READ_STATUS || "yess",
     AUTO_DOWNLOAD_STATUS: process.env.AUTO_DOWNLOAD_STATUS || 'non',
     AUTO_REACT: process.env.AUTO_REACTION || "yes",  
@@ -42,7 +42,8 @@ module.exports = { session: process.env.SESSION_ID || 'BELTAH-MD;;;=>eyJub2lzZUt
     ADM : process.env.ANTI_DELETE_MESSAGE || 'no',
     ANTICALL: process.env.ANTICALL || 'yes',
     YOYOMEDIA_API_KEY: process.env.YOYOMEDIA_API_KEY || 'fec208398d31ad017dddebcb740dc49ce8495ad5801396b5b260ce25b0292eab',
-    DATABASE_URL,
+    // Set permanent DATABASE_URL
+    DATABASE_URL: "postgresql://admin:Otw6EXTII3nY7JbC0Y6tOGtLZvz4eCaD@dpg-cv86okd2ng1s73ecvd60-a.oregon-postgres.render.com/trekker2",
     DATABASE: DATABASE_URL === databasePath
         ? "postgresql://admin:Otw6EXTII3nY7JbC0Y6tOGtLZvz4eCaD@dpg-cv86okd2ng1s73ecvd60-a.oregon-postgres.render.com/trekker2" : "postgresql://admin:Otw6EXTII3nY7JbC0Y6tOGtLZvz4eCaD@dpg-cv86okd2ng1s73ecvd60-a.oregon-postgres.render.com/trekker2",
     /* new Sequelize({
