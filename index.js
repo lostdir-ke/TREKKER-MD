@@ -98,7 +98,7 @@ setTimeout(() => {
         const sockOptions = {
             version,
             logger: pino({ level: "silent" }),
-            browser: ['Beltah-Md', "safari", "1.0.0"],
+            browser: ['TREKKER-MD', "safari", "1.0.0"],
             printQRInTerminal: true,
             fireInitQueries: false,
             shouldSyncHistoryMessage: true,
@@ -793,7 +793,7 @@ ${metadata.desc}`;
         zk.ev.on("connection.update", async (con) => {
             const { lastDisconnect, connection } = con;
             if (connection === "connecting") {
-                console.log("ℹ️BELTAH-MD is connecting to your account...");
+                console.log("ℹ️TREKKER-MD is connecting to your account...");
             }
             else if (connection === 'open') {
 

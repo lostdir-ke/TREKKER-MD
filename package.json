@@ -1,6 +1,5 @@
-
- {
-  "name": "BELTAH-MD",
+{
+  "name": "TREKKER-MD",
   "version": "2.0.0",
   "description": "",
   "main": "inx.js",
@@ -15,10 +14,10 @@
   "keywords": [
     "bot",
     "Baileys",
-    "Beltah-Md",
+    "TREKKER-MD",
     "whatsapp",
     "whatsapp-bot",
-    "Beltah"
+    "TREKKER"
    ],
   "author": "Beltahtechinfo",
 "license": "ISC",
