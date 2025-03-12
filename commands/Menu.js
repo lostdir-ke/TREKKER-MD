@@ -134,7 +134,7 @@ keith({ nomCom: "menu", aliases: ["liste", "helplist", "commandlist"], categorie
 
     let responseMessage = `
  ${greeting}, *${nomAuteurMessage || "User"}*
- 
+
 ╭━❮  ${settings.BOT}  ❯━╮ 
 ┃ *👤ʙᴏᴛ ᴏᴡɴᴇʀ:* ${settings.OWNER_NAME}
 ┃ *🥏ᴘʀᴇғɪx:* *[ ${settings.PREFIXE} ]*
@@ -160,7 +160,7 @@ keith({ nomCom: "menu", aliases: ["liste", "helplist", "commandlist"], categorie
         commandsList += "\n╰─────────────━┈⊷";
     }
 
-    commandsList += readMore + "\n> ᴘᴏᴡᴇʀᴇᴅ ʙʏ ʙᴇʟᴛᴀʜ ʜᴀᴄᴋɪɴɢ ᴛᴇᴀᴍ\n";
+    commandsList += readMore + "\n> ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴛʀᴇᴋᴋᴇʀ ᴛᴇᴀᴍ\n";
 
     try {
         const senderName = message.sender || message.from;
@@ -169,9 +169,9 @@ keith({ nomCom: "menu", aliases: ["liste", "helplist", "commandlist"], categorie
             contextInfo: {
                 mentionedJid: [senderName],
                 externalAdReply: {
-                    title: "𝗕𝗘𝗟𝗧𝗔𝗛-𝗠𝗗 𝗕𝗢𝗧" ,
-                    body: "ᴘᴏᴡᴇʀᴇᴅ ʙʏ ʙᴇʟᴛᴀʜ ʜᴀᴄᴋɪɴɢ ᴛᴇᴀᴍ" ,
-                    thumbnailUrl: "https://telegra.ph/file/dcce2ddee6cc7597c859a.jpg" ,
+                    title: "𝐓𝐑𝐄𝐊𝐊𝐄𝐑 𝐌𝐃" ,
+                    body: "ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴛʀᴇᴋᴋᴇʀ ᴛᴇᴀᴍ" ,
+                    thumbnailUrl: "https://i.postimg.cc/GhvmRfJt/IMG-20250306-033010-020.jpg" ,
                     sourceUrl:'https://whatsapp.com/channel/0029VaRHDBKKmCPKp9B2uH2F' ,
                     mediaType: 1,
                     renderLargerThumbnail: true
@@ -215,7 +215,7 @@ keith({ nomCom: "list", aliases: ["liste", "helplist", "commandlist"], categorie
 
     let responseMessage = `
  ${greeting}, *${nomAuteurMessage || "User"}*
- 
+
 ╭━━━ 〔 ${settings.BOT} 〕━━━┈⊷
 ┃╭──────────────
 ┃│▸ *ʙᴏᴛ ᴏᴡɴᴇʀ:* ${settings.OWNER_NAME}
@@ -234,7 +234,7 @@ keith({ nomCom: "list", aliases: ["liste", "helplist", "commandlist"], categorie
 
 `;
 
-    let commandsList = "*𝐁𝐄𝐋𝐓𝐀𝐇 𝐌𝐃 𝐂𝐎𝐌𝐌𝐀𝐍𝐃𝐒*\n";
+    let commandsList = "*𝐓𝐑𝐄𝐊𝐊𝐄𝐑 𝐌𝐃 𝐂𝐎𝐌𝐌𝐀𝐍𝐃𝐒*\n";
     const sortedCategories = Object.keys(categorizedCommands).sort();
     let commandIndex = 1;
 
@@ -247,7 +247,7 @@ keith({ nomCom: "list", aliases: ["liste", "helplist", "commandlist"], categorie
         commandsList += "\n│◦╰─────────────\n╰──────────────┈⊷\n";
     }
 
-    commandsList += readMore + "\n> ᴘᴏᴡᴇʀᴇᴅ ʙʏ ʙᴇʟᴛᴀʜ ʜᴀᴄᴋɪɴɢ ᴛᴇᴀᴍ\n";
+    commandsList += readMore + "\n> ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴛʀᴇᴋᴋᴇʀ ᴛᴇᴀᴍ\n";
 
     try {
         const senderName = message.sender || message.from;
@@ -256,9 +256,9 @@ keith({ nomCom: "list", aliases: ["liste", "helplist", "commandlist"], categorie
             contextInfo: {
                 mentionedJid: [senderName],
                 externalAdReply: {
-                    title: "𝐁𝐄𝐋𝐓𝐀𝐇 𝐌𝐃" ,
-                    body: "ᴘᴏᴡᴇʀᴇᴅ ʙʏ ʙᴇʟᴛᴀʜ ʜᴀᴄᴋɪɴɢ ᴛᴇᴀᴍ" ,
-                    thumbnailUrl: "https://telegra.ph/file/dcce2ddee6cc7597c859a.jpg" ,
+                    title: "𝐓𝐑𝐄𝐊𝐊𝐄𝐑 𝐌𝐃" ,
+                    body: "ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴛʀᴇᴋᴋᴇʀ ᴛᴇᴀᴍ" ,
+                    thumbnailUrl: "https://i.postimg.cc/GhvmRfJt/IMG-20250306-033010-020.jpg" ,
                     sourceUrl:'https://whatsapp.com/channel/0029VaRHDBKKmCPKp9B2uH2F' ,
                     mediaType: 1,
                     renderLargerThumbnail: true
@@ -302,7 +302,7 @@ keith({ nomCom: "allcmd", aliases: ["liste", "helplist", "commandlist"], categor
 
     let responseMessage = `
  ${greeting}, *${nomAuteurMessage || "User"}*
- 
+
 ╭━━━ 〔 ${settings.BOT} 〕━━━┈⊷
 ┃╭──────────────
 ┃│▸ *ʙᴏᴛ ᴏᴡɴᴇʀ:* ${settings.OWNER_NAME}
@@ -321,7 +321,7 @@ keith({ nomCom: "allcmd", aliases: ["liste", "helplist", "commandlist"], categor
 
 `;
 
-    let commandsList = "*𝐁𝐄𝐋𝐓𝐀𝐇 𝐌𝐃 𝐂𝐎𝐌𝐌𝐀𝐍𝐃𝐒*\n";
+    let commandsList = "*𝐓𝐑𝐄𝐊𝐊𝐄𝐑 𝐌𝐃 𝐂𝐎𝐌𝐌𝐀𝐍𝐃𝐒*\n";
     const sortedCategories = Object.keys(categorizedCommands).sort();
     let commandIndex = 1;
 
@@ -334,7 +334,7 @@ keith({ nomCom: "allcmd", aliases: ["liste", "helplist", "commandlist"], categor
         commandsList += "\n│◦╰─────────────\n╰──────────────┈⊷\n";
     }
 
-    commandsList += readMore + "\n> ᴘᴏᴡᴇʀᴇᴅ ʙʏ ʙᴇʟᴛᴀʜ ʜᴀᴄᴋɪɴɢ ᴛᴇᴀᴍ\n";
+    commandsList += readMore + "\n> ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴛʀᴇᴋᴋᴇʀ ᴛᴇᴀᴍ\n";
 
     try {
         const senderName = message.sender || message.from;
@@ -343,9 +343,9 @@ keith({ nomCom: "allcmd", aliases: ["liste", "helplist", "commandlist"], categor
             contextInfo: {
                 mentionedJid: [senderName],
                 externalAdReply: {
-                    title: "𝐁𝐄𝐋𝐓𝐀𝐇 𝐌𝐃" ,
-                    body: "ᴘᴏᴡᴇʀᴇᴅ ʙʏ ʙᴇʟᴛᴀʜ ʜᴀᴄᴋɪɴɢ ᴛᴇᴀᴍ" ,
-                    thumbnailUrl: "https://telegra.ph/file/dcce2ddee6cc7597c859a.jpg" ,
+                    title: "𝐓𝐑𝐄𝐊𝐊𝐄𝐑 𝐌𝐃" ,
+                    body: "ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴛʀᴇᴋᴋᴇʀ ᴛᴇᴀᴍ" ,
+                    thumbnailUrl: "https://i.postimg.cc/GhvmRfJt/IMG-20250306-033010-020.jpg" ,
                     sourceUrl:'https://whatsapp.com/channel/0029VaRHDBKKmCPKp9B2uH2F' ,
                     mediaType: 1,
                     renderLargerThumbnail: true
@@ -389,7 +389,7 @@ keith({ nomCom: "help", aliases: ["liste", "helplist", "commandlist"], categorie
 
     let responseMessage = `
  ${greeting}, *${nomAuteurMessage || "User"}*
- 
+
 ╭━━━ 〔 ${settings.BOT} 〕━━━┈⊷
 ┃╭──────────────
 ┃│▸ *ʙᴏᴛ ᴏᴡɴᴇʀ:* ${settings.OWNER_NAME}
@@ -406,11 +406,11 @@ keith({ nomCom: "help", aliases: ["liste", "helplist", "commandlist"], categorie
 ╰━━━━━━━━━━━━━━━┈⊷
 *${randomQuote}*
 
-> ᴘᴏᴡᴇʀᴇᴅ ʙʏ ʙᴇʟᴛᴀʜ ʜᴀᴄᴋɪɴɢ ᴛᴇᴀᴍ
+> ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴛʀᴇᴋᴋᴇʀ ᴛᴇᴀᴍ
 
 `;
 
-    let commandsList = "*𝐁𝐄𝐋𝐓𝐀𝐇 𝐌𝐃 𝐂𝐎𝐌𝐌𝐀𝐍𝐃𝐒*\n";
+    let commandsList = "*𝐓𝐑𝐄𝐊𝐊𝐄𝐑 𝐌𝐃 𝐂𝐎𝐌𝐌𝐀𝐍𝐃𝐒*\n";
     const sortedCategories = Object.keys(categorizedCommands).sort();
     let commandIndex = 1;
 
@@ -423,7 +423,7 @@ keith({ nomCom: "help", aliases: ["liste", "helplist", "commandlist"], categorie
         commandsList += "\n│◦╰─────────────\n╰──────────────┈⊷\n";
     }
 
-    commandsList += readMore + "\n> ᴘᴏᴡᴇʀᴇᴅ ʙʏ ʙᴇʟᴛᴀʜ ʜᴀᴄᴋɪɴɢ ᴛᴇᴀᴍ\n";
+    commandsList += readMore + "\n> ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴛʀᴇᴋᴋᴇʀ ᴛᴇᴀᴍ\n";
 
     try {
         const senderName = message.sender || message.from;
@@ -432,9 +432,9 @@ keith({ nomCom: "help", aliases: ["liste", "helplist", "commandlist"], categorie
             contextInfo: {
                 mentionedJid: [senderName],
                 externalAdReply: {
-                    title: "𝐁𝐄𝐋𝐓𝐀𝐇 𝐌𝐃" ,
-                    body: "ᴘᴏᴡᴇʀᴇᴅ ʙʏ ʙᴇʟᴛᴀʜ ʜᴀᴄᴋɪɴɢ ᴛᴇᴀᴍ" ,
-                    thumbnailUrl: "https://telegra.ph/file/dcce2ddee6cc7597c859a.jpg" ,
+                    title: "𝐓𝐑𝐄𝐊𝐊𝐄𝐑 𝐌𝐃" ,
+                    body: "ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴛʀᴇᴋᴋᴇʀ ᴛᴇᴀᴍ" ,
+                    thumbnailUrl: "https://i.postimg.cc/GhvmRfJt/IMG-20250306-033010-020.jpg" ,
                     sourceUrl:'https://whatsapp.com/channel/0029VaRHDBKKmCPKp9B2uH2F' ,
                     mediaType: 1,
                     renderLargerThumbnail: true
