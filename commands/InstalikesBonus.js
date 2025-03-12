@@ -1,12 +1,9 @@
 
 const { keith } = require('../keizzah/keith');
 const axios = require('axios');
-const fs = require('fs');
 const path = require('path');
 const conf = require('../set');
-
-// Path to the JSON file storing claimed users
-const CLAIMED_USERS_FILE = path.join(__dirname, '../database/claimed_users.json');
+const { Pool } = require('pg');
 
 // Instagram URL validation regex
 const INSTAGRAM_URL_REGEX = /https:\/\/(www\.)?instagram\.com\/(p|reel|tv)\/([^/?#&]+)/;
@@ -19,31 +16,73 @@ const API_KEY = process.env.YOYOMEDIA_API_KEY || conf.YOYOMEDIA_API_KEY || 'fe57
 const SERVICE_ID = 11105;
 const QUANTITY = 15;
 
-// Helper function to read the claimed users file
-const getClaimedUsers = () => {
+// Configure PostgreSQL connection
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
+
+// Initialize database table if it doesn't exist
+const initDatabase = async () => {
   try {
-    if (!fs.existsSync(CLAIMED_USERS_FILE)) {
-      fs.writeFileSync(CLAIMED_USERS_FILE, JSON.stringify([]));
-      return [];
-    }
-    const data = fs.readFileSync(CLAIMED_USERS_FILE, 'utf-8');
-    return JSON.parse(data);
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS claimed_users (
+        id SERIAL PRIMARY KEY,
+        user_number TEXT NOT NULL,
+        instagram_link TEXT NOT NULL,
+        order_id TEXT NOT NULL,
+        claimed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log('Database table initialized');
   } catch (error) {
-    console.error('Error reading claimed users file:', error);
-    return [];
+    console.error('Error initializing database:', error);
+  }
+};
+
+// Initialize the database when the file is loaded
+initDatabase();
+
+// Helper function to check if a user has claimed likes
+const hasUserClaimed = async (userNumber) => {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM claimed_users WHERE user_number = $1',
+      [userNumber]
+    );
+    return result.rows.length > 0;
+  } catch (error) {
+    console.error('Error checking claimed user:', error);
+    return false;
   }
 };
 
 // Helper function to save a new claimed user
-const saveClaimedUser = (user) => {
+const saveClaimedUser = async (user) => {
   try {
-    const claimedUsers = getClaimedUsers();
-    claimedUsers.push(user);
-    fs.writeFileSync(CLAIMED_USERS_FILE, JSON.stringify(claimedUsers, null, 2));
+    await pool.query(
+      'INSERT INTO claimed_users(user_number, instagram_link, order_id) VALUES($1, $2, $3)',
+      [user.number, user.link, user.orderId]
+    );
     return true;
   } catch (error) {
     console.error('Error saving claimed user:', error);
     return false;
+  }
+};
+
+// Helper function to get all claimed users
+const getClaimedUsers = async () => {
+  try {
+    const result = await pool.query(
+      'SELECT user_number as number, instagram_link as link, order_id as "orderId", claimed_at as date FROM claimed_users ORDER BY claimed_at DESC'
+    );
+    return result.rows;
+  } catch (error) {
+    console.error('Error getting claimed users:', error);
+    return [];
   }
 };
 
@@ -72,8 +111,7 @@ keith({
   }
   
   // Check if the user has already claimed the free likes
-  const claimedUsers = getClaimedUsers();
-  const alreadyClaimed = claimedUsers.some(user => user.number === userNumber);
+  const alreadyClaimed = await hasUserClaimed(userNumber);
   
   if (alreadyClaimed) {
     return repondre(`*You have already claimed your free likes bonus!* 🚫\n\nContact the owner at: wa.me/254704897825 for more information.`);
@@ -101,11 +139,10 @@ keith({
     
     if (data.order) {
       // Save the user as claimed in the database
-      saveClaimedUser({
+      await saveClaimedUser({
         number: userNumber,
         link: instagramLink,
-        orderId: data.order,
-        date: new Date().toISOString()
+        orderId: data.order
       });
       
       // Send success message
@@ -148,7 +185,7 @@ keith({
   }
   
   try {
-    const claimedUsers = getClaimedUsers();
+    const claimedUsers = await getClaimedUsers();
     
     if (claimedUsers.length === 0) {
       return repondre("*No users have claimed free likes yet.*");
@@ -165,18 +202,20 @@ keith({
     
     message += `Total: ${claimedUsers.length} users`;
     
-    // Send the file as a document
-    fs.writeFileSync('claimed-users-report.txt', message);
-    
+    // Send the formatted message
     await zk.sendMessage(chatId, {
-      document: fs.readFileSync('claimed-users-report.txt'),
-      fileName: 'claimed-users-report.txt',
-      mimetype: 'text/plain',
-      caption: `*Free Instagram Likes - Claimed Users Report*\n\nTotal: ${claimedUsers.length} users`
+      text: message,
+      contextInfo: {
+        externalAdReply: {
+          title: "Instagram Free Likes - Claimed Users",
+          body: "BELTAH-MD BOT",
+          thumbnailUrl: conf.URL,
+          sourceUrl: conf.GURL,
+          mediaType: 1,
+          showAdAttribution: true
+        }
+      }
     }, { quoted: ms });
-    
-    // Clean up temporary file
-    fs.unlinkSync('claimed-users-report.txt');
     
   } catch (error) {
     console.error("Error processing claimed users:", error);
