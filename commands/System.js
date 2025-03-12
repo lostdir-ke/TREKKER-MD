@@ -362,6 +362,22 @@ keith({
   // Function to redeploy the app
   async function redeployApp() {
     try {
+      // Check if an update is actually needed
+      await repondre("*Checking for updates...*");
+      
+      // Get current version info from GitHub repository
+      const checkUpdate = await axios.get("https://api.github.com/repos/lostdir-ke/Test-beltah2/commits/main", {
+        headers: {
+          "User-Agent": "BELTAH-MD-Bot"
+        }
+      });
+      
+      // Store the latest commit SHA for comparison
+      const latestCommit = checkUpdate.data.sha.substring(0, 7);
+      
+      // Update notification
+      await repondre(`*Starting update process...*\n\n• Latest version: ${latestCommit}\n• Deploying update to Heroku`);
+      
       const response = await axios.post(
         `https://api.heroku.com/apps/${herokuAppName}/builds`,
         {
