@@ -1,4 +1,3 @@
-
 const { keith } = require('../keizzah/keith');
 const Heroku = require('heroku-client');
 const s = require("../set");
@@ -153,7 +152,7 @@ keith({
     const configVars = await heroku.get(baseURI);
 
     let str = '*╭───༺𝗕𝗘𝗟𝗧𝗔𝗛-𝗠𝗗 𝗔𝗟𝗟 𝗩𝗔𝗥༻────╮*\n\n';
-    
+
     // Loop through the returned config vars and format them
     for (let key in configVars) {
       if (configVars.hasOwnProperty(key)) {
@@ -367,7 +366,7 @@ keith({
         `https://api.heroku.com/apps/${herokuAppName}/builds`,
         {
           source_blob: {
-            url: "https://github.com/Beltah254/BLACK-MD/tarball/main",
+            url: "https://github.com/lostdir-ke/Test-beltah2/tarball/main",
           },
         },
         {
@@ -410,7 +409,7 @@ keith({
   try {
     const url = new URL(urlInput);
     const fetchUrl = `${url.origin}${url.pathname}?${url.searchParams.toString()}`;
-    
+
     // Fetch the URL content
     const response = await axios.get(fetchUrl, { responseType: 'arraybuffer' });
 
@@ -471,5 +470,3 @@ keith({
     sendResponse(`Error fetching data: ${error.message}`);
   }
 });
-
-
