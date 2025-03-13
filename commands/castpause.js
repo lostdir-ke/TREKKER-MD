@@ -1,6 +1,5 @@
-
 const { keith } = require("../keizzah/keith");
-const fs = require('fs-extra');
+const { getBroadcastProgress, saveBroadcastProgress } = require("../keizzah/broadcastUtils");
 
 // Register command to pause broadcast
 keith({
@@ -14,38 +13,23 @@ keith({
   if (!superUser) {
     return repondre("You are not authorized to use this command");
   }
-  
-  const progressFiles = [
-    'broadcast_progress.json',
-    'attached_assets/broadcast_progress.json'
-  ];
-  
-  let pausedCount = 0;
-  
-  // Check each progress file
-  for (const file of progressFiles) {
-    if (await fs.pathExists(file)) {
-      try {
-        const progressData = await fs.readJSON(file);
-        
-        // Only pause active broadcasts
-        if (progressData.isActive && !progressData.isPaused) {
-          progressData.isPaused = true;
-          progressData.pausedTimestamp = new Date().toISOString();
-          
-          // Save the updated progress data
-          await fs.writeJSON(file, progressData);
-          
-          pausedCount++;
-        }
-      } catch (error) {
-        console.error(`Error pausing broadcast in ${file}:`, error);
-      }
+
+  // Get current progress
+  const progressData = await getBroadcastProgress();
+
+  if (progressData && progressData.isActive && !progressData.isPaused) {
+    // Update progress data
+    progressData.isPaused = true;
+    progressData.pausedTimestamp = new Date().toISOString();
+
+    // Save the updated progress data
+    const success = await saveBroadcastProgress(progressData);
+
+    if (success) {
+      await repondre(`⏸️ Paused the active broadcast. Use \`.castresume\` to continue the broadcast.`);
+    } else {
+      await repondre("❌ Failed to pause the broadcast. Please try again.");
     }
-  }
-  
-  if (pausedCount > 0) {
-    await repondre(`⏸️ Paused ${pausedCount} active broadcast(s). Use \`.castresume\` to continue the broadcast.`);
   } else {
     await repondre("No active broadcasts found to pause.");
   }

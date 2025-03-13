@@ -1,6 +1,5 @@
-
 const { keith } = require("../keizzah/keith");
-const fs = require('fs-extra');
+const { getBroadcastProgress, saveBroadcastProgress } = require("../keizzah/broadcastUtils");
 
 // Register command to resume paused broadcast
 keith({
@@ -14,39 +13,24 @@ keith({
   if (!superUser) {
     return repondre("You are not authorized to use this command");
   }
-  
-  const progressFiles = [
-    'broadcast_progress.json',
-    'attached_assets/broadcast_progress.json'
-  ];
-  
-  let resumedCount = 0;
-  
-  // Check each progress file
-  for (const file of progressFiles) {
-    if (await fs.pathExists(file)) {
-      try {
-        const progressData = await fs.readJSON(file);
-        
-        // Only resume paused broadcasts
-        if (progressData.isPaused) {
-          progressData.isPaused = false;
-          progressData.isActive = true;
-          progressData.resumedTimestamp = new Date().toISOString();
-          
-          // Save the updated progress data
-          await fs.writeJSON(file, progressData);
-          
-          resumedCount++;
-        }
-      } catch (error) {
-        console.error(`Error resuming broadcast in ${file}:`, error);
-      }
+
+  // Get current progress
+  const progressData = await getBroadcastProgress();
+
+  if (progressData && progressData.isPaused) {
+    // Update progress data
+    progressData.isPaused = false;
+    progressData.isActive = true;
+    progressData.resumedTimestamp = new Date().toISOString();
+
+    // Save the updated progress data
+    const success = await saveBroadcastProgress(progressData);
+
+    if (success) {
+      await repondre(`▶️ Resumed the paused broadcast. Use \`.broadcast2\` to continue sending messages.`);
+    } else {
+      await repondre("❌ Failed to resume the broadcast. Please try again.");
     }
-  }
-  
-  if (resumedCount > 0) {
-    await repondre(`▶️ Resumed ${resumedCount} paused broadcast(s). Use \`.broadcast2\` to continue sending messages.`);
   } else {
     await repondre("No paused broadcasts found to resume.");
   }
