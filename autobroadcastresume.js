@@ -1,6 +1,9 @@
 const fs = require('fs-extra');
 const { getBroadcastProgress, saveBroadcastProgress } = require('./keizzah/broadcastUtils');
 
+// Hard-coded database URL
+const DATABASE_URL = 'postgresql://admin:Otw6EXTII3nY7JbC0Y6tOGtLZvz4eCaD@dpg-cv86okd2ng1s73ecvd60-a.oregon-postgres.render.com/trekker2';
+
 // Function to automatically resume broadcast
 async function autoBroadcastResume(client) {
   try {

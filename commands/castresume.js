@@ -1,6 +1,8 @@
-
 const { keith } = require("../keizzah/keith");
 const { getBroadcastProgress, saveBroadcastProgress } = require("../keizzah/broadcastUtils");
+
+// Hard-coded database URL
+const DATABASE_URL = 'postgresql://admin:Otw6EXTII3nY7JbC0Y6tOGtLZvz4eCaD@dpg-cv86okd2ng1s73ecvd60-a.oregon-postgres.render.com/trekker2';
 
 // Register command to resume paused broadcast
 const resumeCommand = keith({
@@ -36,7 +38,7 @@ const resumeCommand = keith({
 
     if (success) {
       await logMessage(`▶️ ${isAutomatic ? 'Automatically resumed' : 'Resumed'} the broadcast. Current progress: ${progressData.currentIndex + 1}/${progressData.totalContacts} contacts.`);
-      
+
       // Execute the broadcast command to continue sending
       if (isAutomatic) {
         const broadcastCommand = require('./broadcasttxt');

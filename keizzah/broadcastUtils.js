@@ -1,5 +1,16 @@
 
-const { pool } = require('../database/db');
+const { Pool } = require('pg');
+
+// Hard-coded database URL
+const DATABASE_URL = 'postgresql://admin:Otw6EXTII3nY7JbC0Y6tOGtLZvz4eCaD@dpg-cv86okd2ng1s73ecvd60-a.oregon-postgres.render.com/trekker2';
+
+// Create pool with hard-coded connection string
+const pool = new Pool({
+  connectionString: DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
 const fs = require('fs-extra');
 
 // Check if a number has been messaged before

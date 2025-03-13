@@ -1,9 +1,12 @@
 
 const { Pool } = require('pg');
 
-// PostgreSQL connection - directly in code rather than from .env
+// Hard-coded database URL - not dependent on environment variables
+const DATABASE_URL = 'postgresql://admin:Otw6EXTII3nY7JbC0Y6tOGtLZvz4eCaD@dpg-cv86okd2ng1s73ecvd60-a.oregon-postgres.render.com/trekker2';
+
+// PostgreSQL connection using hard-coded URL
 const pool = new Pool({
-  connectionString: 'postgresql://admin:Otw6EXTII3nY7JbC0Y6tOGtLZvz4eCaD@dpg-cv86okd2ng1s73ecvd60-a.oregon-postgres.render.com/trekker2',
+  connectionString: DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
   }
