@@ -1,39 +1,16 @@
 const fs = require('fs-extra');
-const path = require('path');
-
-// Function to check if there's an active broadcast to resume
-async function checkActiveBroadcast() {
-  const progressFiles = [
-    'broadcast_progress.json',
-    'attached_assets/broadcast_progress.json'
-  ];
-
-  // Check each progress file
-  for (const file of progressFiles) {
-    if (await fs.pathExists(file)) {
-      try {
-        const progressData = await fs.readJSON(file);
-        // Check if broadcast is active and not completed
-        if (progressData.isActive && progressData.currentIndex < progressData.totalContacts) {
-          console.log(`Found active broadcast in ${file}, will resume automatically`);
-          return true;
-        }
-      } catch (error) {
-        console.error(`Error checking broadcast in ${file}:`, error);
-      }
-    }
-  }
-
-  return false;
-}
+const { getBroadcastProgress, saveBroadcastProgress } = require('./keizzah/broadcastUtils');
 
 // Function to automatically resume broadcast
-async function autoBroadcastResume(client, context) {
+async function autoBroadcastResume(client) {
   try {
-    const isActive = await checkActiveBroadcast();
+    console.log("Checking for paused or interrupted broadcasts to resume...");
 
-    if (isActive) {
-      console.log("Auto-resuming broadcast after connection...");
+    // Get current progress
+    const progressData = await getBroadcastProgress();
+
+    if (progressData && progressData.isActive && !progressData.isPaused) {
+      console.log("Found active broadcast that was interrupted. Preparing to resume...");
 
       // Create a fake context object
       const fakeContext = {
@@ -42,13 +19,18 @@ async function autoBroadcastResume(client, context) {
         msg: null // This indicates it's called programmatically
       };
 
-      // Get the wabroadcastresume command function
-      const wabroadcastresume = require('./commands/wabroadcastresume');
+      // Get the castresume command module
+      const resumeCommand = require('./commands/castresume');
 
-      // Call the command function directly
-      await wabroadcastresume.keith.execution(null, client, fakeContext);
+      // Execute the command
+      await resumeCommand.keith.execution(null, client, fakeContext);
 
+      console.log("Auto-resumed broadcast successfully!");
       return true;
+    } else if (progressData && progressData.isPaused) {
+      console.log("Found a paused broadcast. Will not auto-resume as it was manually paused with .castpause");
+    } else {
+      console.log("No active broadcast found to resume");
     }
   } catch (error) {
     console.error("Error auto-resuming broadcast:", error);

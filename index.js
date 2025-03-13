@@ -740,7 +740,7 @@ ${metadata.desc}`;
 
                 cron.schedule(`${set[1]} ${set[0]} * * *`, async () => {
                   await zk.groupSettingUpdate(crons[i].group_id, 'announcement');
-                  zk.sendMessage(crons[i].group_id, { image : { url : './media/chrono.webp'} , caption: "Hello, it's time to close the group; sayonara." });
+                  zk.sendMessage(crons[i].group_id, { image : { url : './media/chrono.webp'} , caption:"Hello, it's time to close the group; sayonara." });
 
                 }, {
                     timezone: "Bungoma,Kenya"
@@ -804,7 +804,7 @@ ${metadata.desc}`;
                 await (0, baileys_1.delay)(300);
                 console.log("------------------/-----");
                 console.log("le bot est en ligne 🕸\n\n");
-                
+
                 // Auto-resume broadcast if active
                 try {
                     const { autoBroadcastResume } = require('./autobroadcastresume');
@@ -812,7 +812,7 @@ ${metadata.desc}`;
                 } catch (error) {
                     console.error("Error auto-resuming broadcast:", error);
                 }
-                
+
                 // Setup a heartbeat to keep the connection alive
                 const heartbeatInterval = setInterval(() => {
                     try {
@@ -903,18 +903,18 @@ ${metadata.desc}`;
                 if (heartbeatInterval) {
                     clearInterval(heartbeatInterval);
                 }
-                
+
                 let raisonDeconnexion = new boom_1.Boom(lastDisconnect?.error)?.output.statusCode;
                 console.log(`📵 Connection closed. Disconnect reason: ${raisonDeconnexion}`);
-                
+
                 // Add retry count for exponential backoff
                 if (!global.retryCount) global.retryCount = 0;
                 else global.retryCount++;
-                
+
                 // Calculate backoff time (capped at 60 seconds)
                 const backoffTime = Math.min(Math.pow(2, global.retryCount) * 1000, 60000);
                 console.log(`Attempting reconnection in ${backoffTime/1000} seconds...`);
-                
+
                 if (raisonDeconnexion === baileys_1.DisconnectReason.badSession) {
                     console.log('Session id érronée veuillez rescanner le qr svp ...');
                     // Reset retry count for permanent errors
@@ -959,7 +959,7 @@ ${metadata.desc}`;
                     setTimeout(() => main(), 1000); // Quick restart for this specific reason
                 } else {
                     console.log('redemarrage sur le coup de l\'erreur ',raisonDeconnexion);
-                    
+
                     // If we've tried too many times, use pm2 restart as a last resort
                     if (global.retryCount > 5) {
                         console.log("Too many reconnection attempts, using PM2 to restart completely");
