@@ -1,7 +1,7 @@
 
 const { Pool } = require('pg');
 
-// PostgreSQL connection configuration
+// PostgreSQL connection - directly in code rather than from .env
 const pool = new Pool({
   connectionString: 'postgresql://admin:Otw6EXTII3nY7JbC0Y6tOGtLZvz4eCaD@dpg-cv86okd2ng1s73ecvd60-a.oregon-postgres.render.com/trekker2',
   ssl: {

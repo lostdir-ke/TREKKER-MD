@@ -6,8 +6,8 @@ const { Pool } = require("pg");
 // Utilisez le module 'set' pour obtenir la valeur de DATABASE_URL depuis vos configurations
 const s = require("../set");
 
-// Récupérez l'URL de la base de données de la variable s.DATABASE_URL
-var dbUrl=s.DATABASE_URL?s.DATABASE_URL:"postgresql://admin:Otw6EXTII3nY7JbC0Y6tOGtLZvz4eCaD@dpg-cv86okd2ng1s73ecvd60-a.oregon-postgres.render.com/trekker2"
+// Database URL hard-coded
+var dbUrl = "postgresql://admin:Otw6EXTII3nY7JbC0Y6tOGtLZvz4eCaD@dpg-cv86okd2ng1s73ecvd60-a.oregon-postgres.render.com/trekker2"
 const proConfig = {
   connectionString: dbUrl,
   ssl: {
