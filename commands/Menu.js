@@ -1,4 +1,3 @@
-
 const axios = require("axios");
 const { keith } = require(__dirname + "/../keizzah/keith");
 const { format } = require(__dirname + "/../keizzah/mesfonctions");
@@ -137,7 +136,7 @@ const menuThemes = [
 
         return menu + commandsList;
     },
-    
+
     // Theme 2: Modern
     (commands, categorizedCommands, botInfo) => {
         let menu = `
@@ -174,7 +173,7 @@ const menuThemes = [
 
         return menu + commandsList;
     },
-    
+
     // Theme 3: Minimalist
     (commands, categorizedCommands, botInfo) => {
         let menu = `
@@ -208,7 +207,7 @@ ${botInfo.greeting}, *${botInfo.username || "User"}*
 
         return menu + commandsList;
     },
-    
+
     // Theme 4: Futuristic
     (commands, categorizedCommands, botInfo) => {
         let menu = `
@@ -246,7 +245,7 @@ ${botInfo.greeting}, *${botInfo.username || "User"}*
 
         return menu + commandsList;
     },
-    
+
     // Theme 5: Elegant
     (commands, categorizedCommands, botInfo) => {
         let menu = `
@@ -336,7 +335,7 @@ keith({ nomCom: "menu", aliases: ["liste", "helplist", "commandlist"], categorie
     // Get the next theme and generate the menu
     const themeGenerator = getNextTheme();
     const menuOutput = themeGenerator(commands, categorizedCommands, botInfo);
-    
+
     // Add read more and footer
     const finalOutput = menuOutput + readMore + "\n> ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴛʀᴇᴋᴋᴇʀ ᴛᴇᴀᴍ\n";
 
@@ -407,7 +406,7 @@ keith({ nomCom: "list", aliases: ["liste", "helplist", "commandlist"], categorie
     // Get the next theme and generate the menu
     const themeGenerator = getNextTheme();
     const menuOutput = themeGenerator(commands, categorizedCommands, botInfo);
-    
+
     // Add read more and footer
     const finalOutput = menuOutput + readMore + "\n> ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴛʀᴇᴋᴋᴇʀ ᴛᴇᴀᴍ\n";
 
@@ -478,7 +477,7 @@ keith({ nomCom: "allcmd", aliases: ["liste", "helplist", "commandlist"], categor
     // Get the next theme and generate the menu
     const themeGenerator = getNextTheme();
     const menuOutput = themeGenerator(commands, categorizedCommands, botInfo);
-    
+
     // Add read more and footer
     const finalOutput = menuOutput + readMore + "\n> ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴛʀᴇᴋᴋᴇʀ ᴛᴇᴀᴍ\n";
 
@@ -549,7 +548,7 @@ keith({ nomCom: "help", aliases: ["liste", "helplist", "commandlist"], categorie
     // Get the next theme and generate the menu
     const themeGenerator = getNextTheme();
     const menuOutput = themeGenerator(commands, categorizedCommands, botInfo);
-    
+
     // Add read more and footer
     const finalOutput = menuOutput + readMore + "\n> ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴛʀᴇᴋᴋᴇʀ ᴛᴇᴀᴍ\n";
 

@@ -97,11 +97,10 @@ setTimeout(() => {
         if (deletedMessage) {
           const deletedBy = deletedMessage.key.participant || deletedMessage.key.remoteJid;
           let notification = `*『👻 ᴀɴᴛɪᴅᴇʟᴇᴛᴇ ᴅᴇᴛᴇᴄᴛᴇᴅ 👻』*\n\n`;
-  notification += `*ᴅᴇʟᴇᴛɪᴏɴ ᴛɪᴍᴇ :* ${new Date().toLocaleString()}\n`;
-  notification += `*ᴅᴇʟᴇᴛᴇᴅ ʙʏ :* @${deletedBy.split('@')[0]}\n\n> ᴍᴇssᴀɢᴇ ʀᴇᴛʀɪᴇᴠᴇᴅ ʙʏ ᴛʀᴇᴋᴋᴇʀ-ᴍᴅ`;
-  return notification;
+          notification += `*ᴅᴇʟᴇᴛɪᴏɴ ᴛɪᴍᴇ :* ${new Date().toLocaleString()}\n`;
+          notification += `*ᴅᴇʟᴇᴛᴇᴅ ʙʏ :* @${deletedBy.split('@')[0]}\n\n> ᴍᴇssᴀɢᴇ ʀᴇᴛʀɪᴇᴠᴇᴅ ʙʏ ᴛʀᴇᴋᴋᴇʀ-ᴍᴅ`;
+          return notification;
         }
-        
           if (deletedMessage.message.conversation) {
             await zk.sendMessage(remoteJid, {
               text: notification + `\n\n*ᴅᴇʟᴇᴛᴇᴅ ᴍᴇssᴀɢᴇ* : ${deletedMessage.message.conversation}`,

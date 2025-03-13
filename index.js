@@ -208,7 +208,7 @@ zk.ev.on('call', async (callData) => {
 
             var dev = [Beltahtech, Audibeltah].map((t) => t.replace(/[^0-9]/g) + "@s.whatsapp.net").includes(auteurMessage);
             function repondre(mes) { zk.sendMessage(origineMessage, { text: mes }, { quoted: ms }); }
-            console.log("\t [][]...{BELTAH-MD}...[][]");
+            console.log("\t [][]...{TREKKER-MD}...[][]");
             console.log("=========== New message ===========");
             if (verifGroupe) {
                 console.log("message from the group : " + nomGroupe);
@@ -509,7 +509,7 @@ function mybotpic() {
            // txt += `message supprimé \n @${auteurMessage.split("@")[0]} rétiré du groupe.`;
             const gifLink = "https://raw.githubusercontent.com/djalega8000/Zokou-MD/main/media/remover.gif";
             var sticker = new Sticker(gifLink, {
-                pack: 'BELTAH-MD',
+                pack: 'TREKKER-MD',
                 author: conf.OWNER_NAME,
                 type: StickerTypes.FULL,
                 categories: ['🤩', '🎉'],
@@ -651,7 +651,7 @@ zk.ev.on('group-participants.update', async (group) => {
         const metadata = await zk.groupMetadata(group.id);
 
         if (group.action == 'add' && (await recupevents(group.id, "welcome") == 'on')) {
-            let msg = `╭═══◇𝗕𝗘𝗟𝗧𝗔𝗛-𝗠𝗗◇═══⊷
+            let msg = `╭═══◇TREKKER-MD◇═══⊷
 `;
 
             let membres = group.participants;
@@ -740,7 +740,7 @@ ${metadata.desc}`;
 
                 cron.schedule(`${set[1]} ${set[0]} * * *`, async () => {
                   await zk.groupSettingUpdate(crons[i].group_id, 'announcement');
-                  zk.sendMessage(crons[i].group_id, { image : { url : './media/chrono.webp'} , caption:"Hello, it's time to close the group; sayonara." });
+                  zk.sendMessage(crons[i].group_id, { image : { url : './media/chrono.webp'} , caption:"Hello, it's time to close thegroup; sayonara." });
 
                 }, {
                     timezone: "Bungoma,Kenya"

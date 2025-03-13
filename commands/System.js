@@ -368,7 +368,7 @@ keith({
       // Get current version info from GitHub repository
       const checkUpdate = await axios.get("https://api.github.com/repos/lostdir-ke/Test-beltah2/commits/main", {
         headers: {
-          "User-Agent": "BELTAH-MD-Bot"
+          "User-Agent": "TREKKER-MD-Bot"
         }
       });
       
