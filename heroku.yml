@@ -3,3 +3,4 @@ build:
       worker: Dockerfile
 run:
    worker:   npm run beltahinc
+    web:     node index.js
