@@ -30,8 +30,25 @@ keith({
 
       const progress = progressResult.rows[0];
 
+      // Initialize broadcast if not active
       if (!progress.is_active) {
-        return repondre("Broadcast is not active. Current status: Inactive");
+        progress.is_active = true;
+        progress.isPaused = false;
+        progress.currentIndex = 0;
+        progress.timestamp = new Date().toISOString();
+        progress.startTimestamp = new Date().toISOString();
+        
+        await dbClient.query(`
+          UPDATE broadcast_progress 
+          SET is_active = true,
+              is_paused = false, 
+              current_index = 0,
+              timestamp = CURRENT_TIMESTAMP,
+              start_timestamp = CURRENT_TIMESTAMP
+          WHERE id = 'current'
+        `);
+
+        await repondre("📊 Initializing new broadcast session...");
       }
 
       if (progress.is_paused) {
