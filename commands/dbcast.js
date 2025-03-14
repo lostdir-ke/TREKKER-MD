@@ -72,17 +72,6 @@ keith({
 
       // Process contacts
       for (const contact of contactsResult.rows) {
-        // Check if broadcast was paused
-        const pauseCheck = await dbClient.query(
-          'SELECT is_paused FROM broadcast_progress WHERE id = $1',
-          ['current']
-        );
-        
-        if (pauseCheck.rows[0].is_paused) {
-          await repondre("⏸️ Broadcast paused");
-          return;
-        }
-
         try {
           // Send message
           const recipientName = contact.name || "there";
