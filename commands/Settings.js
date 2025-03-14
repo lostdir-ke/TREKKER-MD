@@ -1,6 +1,3 @@
-
-
-
 const { keith } = require("../keizzah/keith");
 const s = require("../set");
 const fs = require('fs');
@@ -23,7 +20,7 @@ keith({
 
   // Check if the command is issued by the owner
   if (!superUser) {
-    return repondre("*This command is restricted to the bot owner. or Beltah owner* 💀,,idiot");
+    return repondre("*This command is restricted to the bot owner or TREKKER owner* 💀,,idiot");
   }
 
   // Validate user input and respond accordingly
@@ -65,7 +62,7 @@ keith({
 
   // Check if the command is issued by the owner
   if (!superUser) {
-    return repondre("*This command is restricted to the bot owner or Beltah owner.* 💀,,idiot");
+    return repondre("*This command is restricted to the bot owner or TREKKER owner.* 💀,,idiot");
   }
 
   // Validate user input and respond accordingly
@@ -146,7 +143,7 @@ keith({
 
   // Check if the command is issued by the owner
   if (!superUser) {
-    return repondre("*This command is restricted to the bot owner or Beltah owner.* 💀,,idiot");
+    return repondre("*This command is restricted to the bot owner or TREKKER owner.* 💀,,idiot");
   }
 
   // Validate user input and respond accordingly
@@ -187,7 +184,7 @@ keith({
 
   // Check if the command is issued by the owner
   if (!superUser) {
-    return repondre("*This command is restricted to the bot owner or Beltah owner.* 💀,,idiot");
+    return repondre("*This command is restricted to the bot owner or TREKKER owner.* 💀,,idiot");
   }
 
   // Validate user input and respond accordingly
@@ -228,7 +225,7 @@ keith({
 
   // Check if the command is issued by the owner
   if (!superUser) {
-    return repondre("*This command is restricted to the bot owner or Beltah owner.* 💀,,idiot");
+    return repondre("*This command is restricted to the bot owner or TREKKER owner.* 💀,,idiot");
   }
 
   // Validate user input and respond accordingly
@@ -269,7 +266,7 @@ keith({
 
   // Check if the command is issued by the owner
   if (!superUser) {
-    return repondre("*This command is restricted to the bot owner or Beltah owner.* 💀,,idiot");
+    return repondre("*This command is restricted to the bot owner or TREKKER owner.* 💀,,idiot");
   }
 
   // Validate user input and respond accordingly
@@ -310,7 +307,7 @@ keith({
 
   // Check if the command is issued by the owner
   if (!superUser) {
-    return repondre("*This command is restricted to the bot owner or Beltah owner.* 💀,,idiot");
+    return repondre("*This command is restricted to the bot owner or TREKKER owner.* 💀,,idiot");
   }
 
   // Validate user input and respond accordingly
@@ -350,7 +347,7 @@ keith({
 
   // Check if the command is issued by the owner
   if (!superUser) {
-    return repondre("*This command is restricted to the bot owner or Beltah owner.* 💀,,idiot");
+    return repondre("*This command is restricted to the bot owner or TREKKER owner.* 💀,,idiot");
   }
 
   // Validate user input and respond accordingly
@@ -390,7 +387,7 @@ keith({
 
   // Check if the command is issued by the owner
   if (!superUser) {
-    return repondre("*This command is restricted to the bot owner or Beltah owner.* 💀,,idiot");
+    return repondre("*This command is restricted to the bot owner or TREKKER owner.* 💀,,idiot");
   }
 
   // Validate user input and respond accordingly
@@ -431,7 +428,7 @@ keith({
 
   // Check if the command is issued by the owner
   if (!superUser) {
-    return repondre("*This command is restricted to the bot owner or Beltah owner.* 💀,,idiot");
+    return repondre("*This command is restricted to the bot owner or TREKKER owner.* 💀,,idiot");
   }
 
   // Validate user input and respond accordingly
@@ -472,7 +469,7 @@ keith({
 
   // Check if the command is issued by the owner
   if (!superUser) {
-    return repondre("*This command is restricted to the bot owner or Beltah owner.* 💀,,idiot");
+    return repondre("*This command is restricted to the bot owner or TREKKER owner.* 💀,,idiot");
   }
 
   // Validate user input and respond accordingly
@@ -513,7 +510,7 @@ keith({
 
   // Check if the command is issued by the owner
   if (!superUser) {
-    return repondre("*This command is restricted to the bot owner or Beltah owner.* 💀,,idiot");
+    return repondre("*This command is restricted to the bot owner or TREKKER owner.* 💀,,idiot");
   }
 
   // Validate user input and respond accordingly
@@ -554,7 +551,7 @@ keith({
 
   // Check if the command is issued by the owner
   if (!superUser) {
-    return repondre("*This command is restricted to the bot owner or Beltah owner.* 💀,,idiot");
+    return repondre("*This command is restricted to the bot owner or TREKKER owner.* 💀,,idiot");
   }
 
   // Validate user input and respond accordingly
@@ -595,7 +592,7 @@ keith({
 
   // Check if the command is issued by the owner
   if (!superUser) {
-    return repondre("*This command is restricted to the bot owner or Beltah owner.* 💀,,idiot");
+    return repondre("*This command is restricted to the bot owner or TREKKER owner.* 💀,,idiot");
   }
 
   // Validate user input and respond accordingly
@@ -636,7 +633,7 @@ keith({
 
   // Check if the command is issued by the owner
   if (!superUser) {
-    return repondre("*This command is restricted to the bot owner or Beltah owner.* 💀,,idiot");
+    return repondre("*This command is restricted to the bot owner or TREKKER owner.* 💀,,idiot");
   }
 
   // Validate user input and respond accordingly
@@ -676,7 +673,7 @@ keith({
 
   // Check if the command is issued by the owner
   if (!superUser) {
-    return repondre("*This command is restricted to the bot owner or Beltah owner.* 💀,,idiot");
+    return repondre("*This command is restricted to the bot owner or TREKKER owner.* 💀,,idiot");
   }
 
   // Validate user input and respond accordingly
@@ -716,7 +713,7 @@ keith({
 
   // Check if the command is issued by the owner
   if (!superUser) {
-    return repondre("*This command is restricted to the bot owner or beltah owner.* 💀,,idiot");
+    return repondre("*This command is restricted to the bot owner or TREKKER owner.* 💀,,idiot");
   }
 
   // Validate user input and respond accordingly
@@ -754,7 +751,7 @@ keith({
   categorie: "HEROKU-CLIENT"
 }, async (chatId, messagingService, context) => {
   const { ms, repondre, superUser, auteurMessage } = context;
-  
+
   if (!superUser) {
     repondre("This command is for my owner only!");
     return;
@@ -774,7 +771,7 @@ keith({
     { nom: "CHAT_BOT", choix: ['on', 'off'] }
   ];
 
-  let settingsMenu = "╭──────༺♡༻──────╮\n𝐁𝐄𝐋𝐓𝐀𝐇 𝐌𝐃 Settings\n╰──────༺♡༻──────╯\n\n";
+  let settingsMenu = "╭──────༺♡༻──────╮\nTREKKER-MD Settings\n╰──────༺♡༻──────╯\n\n";
   settingsOptions.forEach((option, index) => {
     settingsMenu += `${index + 1}- *${option.nom}*\n`;
   });
@@ -794,7 +791,7 @@ keith({
   });
 
   const selectedOption = settingsOptions[userChoice.message.extendedTextMessage.text - 1];
-  let settingsDetail = `╭──────༺♡༻──────╮\n ʙᴇʟᴛᴀʜ ᴍᴅsettings\n╰──────༺♡༻──────╯\n\n`;
+  let settingsDetail = `╭──────༺♡༻──────╮\nTREKKER-MD settings\n╰──────༺♡༻──────╯\n\n`;
   settingsDetail += `*Variable Name* : ${selectedOption.nom}\n`;
   settingsDetail += `*Description* : ${getDescriptionFromEnv(selectedOption.nom)}\n\n`;
   settingsDetail += "┌────── ⋆⋅☆⋅⋆ ──────┐\n\n";
@@ -804,7 +801,7 @@ keith({
   settingsDetail += "\n└────── ⋆⋅☆⋅⋆ ──────┘\n\n*Now reply to this message with the number that matches your choice.*";
 
   const choiceMessage = await messagingService.sendMessage(chatId, { text: settingsDetail }, { quoted: userChoice });
-  
+
   // Await user choice for the option
   const userOptionChoice = await messagingService.awaitForMessage({
     chatJid: chatId,
@@ -832,7 +829,7 @@ function changevars(commandName, varName) {
     categorie: 'HEROKU-CLIENT'
   }, async (chatId, messagingService, context) => {
     const { arg, superUser, repondre } = context;
-    
+
     if (!superUser) {
       repondre("This command is for my owner only!");
       return;
@@ -861,4 +858,3 @@ function changevars(commandName, varName) {
 
 changevars("setprefix", "PREFIXES");
 changevars("menulinks", "BOT_MENU_LINKS");
-
