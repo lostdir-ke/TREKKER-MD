@@ -2,5 +2,11 @@ build:
   docker:
     worker: Dockerfile
 run:
-  worker: npm run beltahinc
-  web: node index.js
+  web:
+    image: worker
+    command:
+      - node index.js
+  worker:
+    image: worker
+    command:
+      - npm run beltahinc
