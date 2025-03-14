@@ -7,6 +7,16 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "s": "node inx.js", 
+
+
+
+m
+  "start": "node index.js",
+
+
+
+
+    
     "beltahinc": "pm2 start inx.js --attach --max-memory-restart 490M",
     "beltah": "pm2 start beltahmd.js --attach",
     "c": "tsc"
