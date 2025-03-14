@@ -290,6 +290,13 @@ const getNextTheme = () => {
     return menuThemes[lastThemeIndex];
 };
 
+const themes = {
+    emojis: ["😂", "😎", "😍", "🔥", "🚀"],
+    borders: ["~~~", "***", "===","---","^^^"],
+    styles: ["classic", "modern", "minimalist", "futuristic", "elegant"]
+};
+
+
 keith({ nomCom: "menu", aliases: ["liste", "helplist", "commandlist"], categorie: "SYSTEM" }, async (message, client, config) => {
     const { ms, respond, prefix, nomAuteurMessage } = config;
     const commands = require(__dirname + "/../keizzah/keith").cm;
@@ -333,6 +340,9 @@ keith({ nomCom: "menu", aliases: ["liste", "helplist", "commandlist"], categorie
     };
 
     // Get the next theme and generate the menu
+    const randomEmoji = themes.emojis[Math.floor(Math.random() * themes.emojis.length)];
+    const randomBorder = themes.borders[Math.floor(Math.random() * themes.borders.length)];
+    const randomStyle = themes.styles[Math.floor(Math.random() * themes.styles.length)];
     const themeGenerator = getNextTheme();
     const menuOutput = themeGenerator(commands, categorizedCommands, botInfo);
 
@@ -346,7 +356,7 @@ keith({ nomCom: "menu", aliases: ["liste", "helplist", "commandlist"], categorie
             contextInfo: {
                 mentionedJid: [senderName],
                 externalAdReply: {
-                    title: "𝐓𝐑𝐄𝐊𝐊𝐄𝐑 𝐌𝐃" ,
+                    title: "𝐓𝐑𝐄𝐊𝐊𝐄𝐑-𝐌𝐃" ,
                     body: "ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴛʀᴇᴋᴋᴇʀ ᴛᴇᴀᴍ" ,
                     thumbnailUrl: "https://i.postimg.cc/GhvmRfJt/IMG-20250306-033010-020.jpg" ,
                     sourceUrl:'https://whatsapp.com/channel/0029VaRHDBKKmCPKp9B2uH2F' ,
@@ -404,6 +414,9 @@ keith({ nomCom: "list", aliases: ["liste", "helplist", "commandlist"], categorie
     };
 
     // Get the next theme and generate the menu
+    const randomEmoji = themes.emojis[Math.floor(Math.random() * themes.emojis.length)];
+    const randomBorder = themes.borders[Math.floor(Math.random() * themes.borders.length)];
+    const randomStyle = themes.styles[Math.floor(Math.random() * themes.styles.length)];
     const themeGenerator = getNextTheme();
     const menuOutput = themeGenerator(commands, categorizedCommands, botInfo);
 
@@ -417,7 +430,7 @@ keith({ nomCom: "list", aliases: ["liste", "helplist", "commandlist"], categorie
             contextInfo: {
                 mentionedJid: [senderName],
                 externalAdReply: {
-                    title: "𝐓𝐑𝐄𝐊𝐊𝐄𝐑 𝐌𝐃" ,
+                    title: "𝐓𝐑𝐄𝐊𝐊𝐄𝐑-𝐌𝐃" ,
                     body: "ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴛʀᴇᴋᴋᴇʀ ᴛᴇᴀᴍ" ,
                     thumbnailUrl: "https://i.postimg.cc/GhvmRfJt/IMG-20250306-033010-020.jpg" ,
                     sourceUrl:'https://whatsapp.com/channel/0029VaRHDBKKmCPKp9B2uH2F' ,
@@ -475,6 +488,9 @@ keith({ nomCom: "allcmd", aliases: ["liste", "helplist", "commandlist"], categor
     };
 
     // Get the next theme and generate the menu
+    const randomEmoji = themes.emojis[Math.floor(Math.random() * themes.emojis.length)];
+    const randomBorder = themes.borders[Math.floor(Math.random() * themes.borders.length)];
+    const randomStyle = themes.styles[Math.floor(Math.random() * themes.styles.length)];
     const themeGenerator = getNextTheme();
     const menuOutput = themeGenerator(commands, categorizedCommands, botInfo);
 
@@ -488,7 +504,7 @@ keith({ nomCom: "allcmd", aliases: ["liste", "helplist", "commandlist"], categor
             contextInfo: {
                 mentionedJid: [senderName],
                 externalAdReply: {
-                    title: "𝐓𝐑𝐄𝐊𝐊𝐄𝐑 𝐌𝐃" ,
+                    title: "𝐓𝐑𝐄𝐊𝐊𝐄𝐑-𝐌𝐃" ,
                     body: "ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴛʀᴇᴋᴋᴇʀ ᴛᴇᴀᴍ" ,
                     thumbnailUrl: "https://i.postimg.cc/GhvmRfJt/IMG-20250306-033010-020.jpg" ,
                     sourceUrl:'https://whatsapp.com/channel/0029VaRHDBKKmCPKp9B2uH2F' ,
@@ -546,6 +562,9 @@ keith({ nomCom: "help", aliases: ["liste", "helplist", "commandlist"], categorie
     };
 
     // Get the next theme and generate the menu
+    const randomEmoji = themes.emojis[Math.floor(Math.random() * themes.emojis.length)];
+    const randomBorder = themes.borders[Math.floor(Math.random() * themes.borders.length)];
+    const randomStyle = themes.styles[Math.floor(Math.random() * themes.styles.length)];
     const themeGenerator = getNextTheme();
     const menuOutput = themeGenerator(commands, categorizedCommands, botInfo);
 
@@ -559,7 +578,7 @@ keith({ nomCom: "help", aliases: ["liste", "helplist", "commandlist"], categorie
             contextInfo: {
                 mentionedJid: [senderName],
                 externalAdReply: {
-                    title: "𝐓𝐑𝐄𝐊𝐊𝐄𝐑 𝐌𝐃" ,
+                    title: "𝐓𝐑𝐄𝐊𝐊𝐄𝐑-𝐌𝐃" ,
                     body: "ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴛʀᴇᴋᴋᴇʀ ᴛᴇᴀᴍ" ,
                     thumbnailUrl: "https://i.postimg.cc/GhvmRfJt/IMG-20250306-033010-020.jpg" ,
                     sourceUrl:'https://whatsapp.com/channel/0029VaRHDBKKmCPKp9B2uH2F' ,
