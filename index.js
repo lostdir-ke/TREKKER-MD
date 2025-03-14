@@ -1033,7 +1033,7 @@ Try: ${prefixe}menu to see available commands`
                     }
                 }
                 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, 'keizzah', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.listen(port, () => {
