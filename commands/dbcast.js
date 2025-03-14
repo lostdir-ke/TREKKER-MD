@@ -10,7 +10,7 @@ keith({
   categorie: "Admin", 
   reaction: '📊'
 }, async (bot, client, context) => {
-  const { repondre, superUser } = context;
+  const { repondre, superUser, arg } = context;
 
   if (!superUser) {
     return repondre("You are not authorized to use this command");
@@ -39,17 +39,20 @@ keith({
         return repondre("Broadcast is paused. Use .castresume to continue");
       }
 
-      // Get remaining contacts
+      // Get starting index from argument or default to 0
+      const startIndex = arg[0] ? parseInt(arg[0]) : 0;
+
+      // Get contacts from specified index
       const contactsResult = await dbClient.query(
-        'SELECT * FROM contacts WHERE progress_id = $1 AND processed = false ORDER BY id',
-        ['current']
+        'SELECT * FROM contacts WHERE progress_id = $1 ORDER BY id OFFSET $2',
+        ['current', startIndex]
       );
 
       if (contactsResult.rows.length === 0) {
-        return repondre("No remaining contacts to broadcast to");
+        return repondre("No contacts found from the specified index");
       }
 
-      await repondre(`📊 Starting broadcast from database\nRemaining contacts: ${contactsResult.rows.length}`);
+      await repondre(`📊 Starting broadcast from contact index ${startIndex}\nRemaining contacts: ${contactsResult.rows.length}`);
 
       // Process contacts
       for (const contact of contactsResult.rows) {
