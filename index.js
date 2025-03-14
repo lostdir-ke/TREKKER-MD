@@ -892,9 +892,10 @@ ${metadata.desc}`;
 > *${conf.BOT}*
 ╰═════════════════⊷`;
                 await zk.sendMessage(zk.user.id, {
-  text: cmsg,
-  disappearingMessagesInChat: true,
-  ephemeralExpiration: 5
+  text: `*TREKKER-MD* Connected Successfully ✅
+
+Bot is ready to use!
+Try: ${prefixe}menu to see available commands`
 });
                 }
             }
