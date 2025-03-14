@@ -1,9 +1,6 @@
-
 build:
   docker:
-    web: Dockerfile
+      worker: Dockerfile
 run:
-  web:
-    command:
-      - node index.js
-    image: beltah-md-web:latest
+   worker:   npm run beltahinc
+    web:     node index.js
