@@ -62,7 +62,7 @@ var session = conf.session.replace(/BELTAH-MD;;;=>/g,"");
 const prefixe = conf.PREFIXE;
 const express = require("express");
 const app = express();
-const port = process.env.PORT || 9090;
+const port = process.env.PORT || 3000;
 
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));

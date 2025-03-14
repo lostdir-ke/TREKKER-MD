@@ -20,6 +20,6 @@ RUN npm install --legacy-peer-deps
 
 COPY . .
 
-EXPOSE 5000
+EXPOSE ${PORT}
 
-CMD ["npm", "run" , "beltah"]
+CMD ["node", "index.js"]
