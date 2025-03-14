@@ -23,7 +23,7 @@ async function autoBroadcastResume(client) {
       };
 
       // Get the castresume command module
-      const resumeCommand = require('./commands/castresume');
+      const resumeCommand = require('./commands/dbresume');
 
       // Execute the command
       await resumeCommand.keith.execution(null, client, fakeContext);
