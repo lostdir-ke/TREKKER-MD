@@ -6,4 +6,4 @@ run:
   web:
     command:
       - node index.js
-    image: beltah-md-bot:latest
+    image: beltah-md-web:latest
