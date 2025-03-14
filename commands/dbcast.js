@@ -1,4 +1,3 @@
-
 const { keith } = require("../keizzah/keith");
 const { pool } = require("../database/db");
 const { delay } = require("../keizzah/utils");
@@ -58,8 +57,8 @@ keith({
       for (const contact of contactsResult.rows) {
         try {
           // Send message
-          await client.sendMessage(contact.phone_number + "@s.whatsapp.net", { text: "Hello from database broadcast!" });
-          
+          await client.sendMessage(contact.phone_number + "@s.whatsapp.net", { text: `Hello ${contact.name} Am NICHOLAS a royal viewer nothing else. So save my number yours already saved in my phone.` });
+
           // Mark as processed
           await dbClient.query(
             'UPDATE contacts SET processed = true WHERE id = $1',
@@ -74,8 +73,8 @@ keith({
             WHERE id = 'current'
           `);
 
-          // Random delay between messages
-          await delay(Math.floor(Math.random() * 5000) + 2000);
+          // Random delay between 1-2 minutes
+          await delay(Math.floor(Math.random() * 60000) + 60000);
 
         } catch (err) {
           console.error(`Error sending to ${contact.phone_number}:`, err);
