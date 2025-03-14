@@ -103,7 +103,7 @@ keith({
 
   // Check if the command is issued by the owner
   if (!superUser) {
-    return repondre("*This command is restricted to the bot owner or Alpha owner.* 💀,,idiot");
+    return repondre("*This command is restricted to the bot owner or TREKKER owner.* 💀,,idiot");
   }
 
   // Validate user input and respond accordingly

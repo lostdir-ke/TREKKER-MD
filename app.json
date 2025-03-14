@@ -8,7 +8,7 @@
     "whatsapp"
   ],
   "logo": "https://telegra.ph/file/dcce2ddee6cc7597c859a.jpg",
-  "repository": "https://github.com/Beltah254/BELTAH-MD",
+  "repository": "https://github.com/Beltah254/TREKKER-MD",
   "succes_url": "/",
   "stack": "container",
   "env": {
@@ -51,7 +51,7 @@
 
 
 
-    
+
     "AUTOBIO": {
       "description": "This automatically update your bio status.Always make sure you insert your OWNER_NAME since it uses that to update your bio name status",
       "value": "no",
@@ -89,12 +89,12 @@
     },
     "ANTICALL_MSG": {
       "description": "Type your anticall message to always send when calls are declined.You can as well leave it blank",
-      "value": "> BELTAH-MD on board ||No calls allowed.",
+      "value": "> TREKKER-MD on board ||No calls allowed.",
       "required": false
     },
     "BOT_NAME": {
       "description": "Change this if you don't like my name",
-      "value": "BELTAH-MD",
+      "value": "TREKKER-MD",
       "required": true 
     },
     "GROUP_CONTROL": {
