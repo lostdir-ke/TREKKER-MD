@@ -66,11 +66,13 @@ keith({
             [contact.id]
           );
 
-          // Update stats
+          // Update stats and save progress
           await dbClient.query(`
             UPDATE broadcast_progress 
             SET success_count = success_count + 1,
-                current_index = current_index + 1
+                current_index = current_index + 1,
+                timestamp = CURRENT_TIMESTAMP,
+                is_active = true
             WHERE id = 'current'
           `);
 
