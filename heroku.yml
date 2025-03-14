@@ -2,5 +2,8 @@
 build:
   docker:
     web: Dockerfile
+    image: beltah-md-bot:latest
 run:
-  web: node index.js
+  web:
+    command: node index.js
+    image: beltah-md-bot:latest
