@@ -21,13 +21,22 @@ keith({
   }
 
   try {
-    // Download the JSON file from URL
-    const response = await axios.get(arg[0]);
+    // Download any JSON file from URL
+    const response = await axios.get(arg[0], {
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
     const progressData = response.data;
 
     // Validate the data structure
     if (!progressData || typeof progressData !== 'object') {
-      return repondre("Invalid data format in the downloaded file");
+      return repondre("Invalid JSON format in the downloaded file");
+    }
+    
+    // Check for required properties
+    if (!progressData.contacts || !Array.isArray(progressData.contacts)) {
+      return repondre("Invalid broadcast file format - missing contacts array");
     }
 
     const client = await pool.connect();
