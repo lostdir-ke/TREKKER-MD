@@ -3,7 +3,6 @@ const { keith } = require("../keizzah/keith");
 const { pool } = require("../database/db");
 const axios = require("axios");
 
-// Register dbupload command
 keith({
   nomCom: 'dbupload',
   aliase: 'uploadbroadcastdata',
@@ -16,76 +15,80 @@ keith({
     return repondre("You are not authorized to use this command");
   }
 
-  if (!arg[0]) {
-    return repondre("Please provide the URL to download the broadcast data from\nUsage: .dbupload <url>");
-  }
-
+  const url = arg[0] || 'https://raw.githubusercontent.com/Beltah254/BELTAH-MD/main/verified_contacts.txt';
+  
   try {
-    // Download any JSON file from URL
-    const response = await axios.get(arg[0], {
-      headers: {
-        'Accept': 'application/json'
-      }
-    });
-    const progressData = response.data;
-
-    // Validate the data structure
-    if (!progressData || typeof progressData !== 'object') {
-      return repondre("Invalid JSON format in the downloaded file");
-    }
+    await repondre(`📥 Downloading contacts from:\n${url}`);
     
-    // Check for required properties
-    if (!progressData.contacts || !Array.isArray(progressData.contacts)) {
-      return repondre("Invalid broadcast file format - missing contacts array");
+    const response = await axios.get(url, {
+      headers: { 'Accept': 'application/json' }
+    });
+    const data = response.data;
+
+    if (!data || typeof data !== 'object') {
+      return repondre("❌ Invalid JSON format in downloaded file");
     }
 
-    const client = await pool.connect();
+    if (!data.contacts || !Array.isArray(data.contacts)) {
+      return repondre("❌ Invalid format - missing contacts array");
+    }
+
+    await repondre(`📁 File downloaded successfully!\n📊 Found ${data.contacts.length} contacts\n⏳ Starting database upload...`);
+
+    const dbClient = await pool.connect();
     try {
-      // First clear existing data
-      await client.query('DELETE FROM broadcast_progress WHERE id = $1', ['current']);
-      await client.query('DELETE FROM contacts WHERE progress_id = $1', ['current']);
+      // Process in batches of 100
+      const BATCH_SIZE = 100;
+      let processedCount = 0;
+      let successCount = 0;
+
+      // Clear existing data
+      await dbClient.query('DELETE FROM broadcast_progress WHERE id = $1', ['current']);
+      await dbClient.query('DELETE FROM contacts WHERE progress_id = $1', ['current']);
 
       // Insert new broadcast progress
-      await client.query(`
+      await dbClient.query(`
         INSERT INTO broadcast_progress (
           id, current_index, total_contacts, timestamp, is_active, is_paused,
-          success_count, registered_count, not_registered_count, already_messaged_count,
-          start_timestamp, paused_timestamp, resumed_timestamp
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+          success_count
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7)
       `, [
         'current',
-        progressData.currentIndex || 0,
-        progressData.contacts?.length || 0,
+        0,
+        data.contacts.length,
         new Date(),
-        progressData.isActive || false,
-        progressData.isPaused || false,
-        progressData.stats?.successCount || 0,
-        progressData.stats?.registeredCount || 0,
-        progressData.stats?.notRegisteredCount || 0,
-        progressData.stats?.alreadyMessagedCount || 0,
-        progressData.startTimestamp || null,
-        progressData.pausedTimestamp || null,
-        progressData.resumedTimestamp || null
+        false,
+        false,
+        0
       ]);
 
-      // Insert contacts if present
-      if (progressData.contacts && Array.isArray(progressData.contacts)) {
-        for (const contact of progressData.contacts) {
-          await client.query(
+      // Process contacts in batches
+      for (let i = 0; i < data.contacts.length; i += BATCH_SIZE) {
+        const batch = data.contacts.slice(i, Math.min(i + BATCH_SIZE, data.contacts.length));
+        
+        await Promise.all(batch.map(contact => 
+          dbClient.query(
             'INSERT INTO contacts (progress_id, name, phone_number, processed) VALUES ($1, $2, $3, $4)',
-            ['current', contact.name, contact.phoneNumber, false]
-          );
+            ['current', contact.name || '', contact.phoneNumber, false]
+          ).then(() => successCount++)
+        ));
+
+        processedCount += batch.length;
+        
+        // Progress update every batch
+        if (processedCount % BATCH_SIZE === 0 || processedCount === data.contacts.length) {
+          await repondre(`📊 Progress: ${processedCount}/${data.contacts.length} contacts\n✅ Successfully saved: ${successCount}`);
         }
       }
 
-      await repondre(`✅ Successfully uploaded broadcast data to database\n\nContacts: ${progressData.contacts?.length || 0}\nCurrent Index: ${progressData.currentIndex || 0}\nStatus: ${progressData.isActive ? 'Active' : 'Inactive'}${progressData.isPaused ? ' (Paused)' : ''}`);
+      await repondre(`✅ Upload completed!\n📊 Total contacts: ${data.contacts.length}\n✅ Successfully saved: ${successCount}\n\nDatabase is ready for broadcast using .dbcast command`);
 
     } finally {
-      client.release();
+      dbClient.release();
     }
 
   } catch (error) {
     console.error('Error uploading broadcast data:', error);
-    return repondre("❌ Failed to upload broadcast data: " + error.message);
+    return repondre("❌ Failed to upload: " + error.message);
   }
 });

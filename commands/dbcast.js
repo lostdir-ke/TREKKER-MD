@@ -57,7 +57,8 @@ keith({
       for (const contact of contactsResult.rows) {
         try {
           // Send message
-          await client.sendMessage(contact.phone_number + "@s.whatsapp.net", { text: `Hello ${contact.name} Am NICHOLAS a royal viewer nothing else. So save my number yours already saved in my phone.` });
+          const recipientName = contact.name || "there";
+          await client.sendMessage(contact.phone_number + "@s.whatsapp.net", { text: `Hello ${recipientName} Am NICHOLAS a royal viewer nothing else. So save my number yours already saved in my phone.` });
 
           // Mark as processed
           await dbClient.query(
