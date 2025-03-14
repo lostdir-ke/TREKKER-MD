@@ -5,5 +5,6 @@ build:
     image: beltah-md-bot:latest
 run:
   web:
-    command: node index.js
+    command:
+      - node index.js
     image: beltah-md-bot:latest
