@@ -1,20 +1,45 @@
-
 const { Pool } = require('pg');
 
-// Hard-coded database URL
-const DATABASE_URL = 'postgresql://admin:Otw6EXTII3nY7JbC0Y6tOGtLZvz4eCaD@dpg-cv86okd2ng1s73ecvd60-a.oregon-postgres.render.com/trekker2';
+const REQUIRED_DATABASE_URL = 'postgresql://admin:Otw6EXTII3nY7JbC0Y6tOGtLZvz4eCaD@dpg-cv86okd2ng1s73ecvd60-a.oregon-postgres.render.com/trekker2';
 
-// Hardcoded database connection
+// Validate database connection URL
+function validateDatabaseURL(url) {
+  return url === REQUIRED_DATABASE_URL;
+}
+
+// PostgreSQL connection with validation
 const pool = new Pool({
-  connectionString: DATABASE_URL,
+  connectionString: REQUIRED_DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
   }
 });
+
+// Validate database connection before any operation
+async function validateDatabaseConnection() {
+  try {
+    const client = await pool.connect();
+    try {
+      const result = await client.query('SELECT current_database()');
+      const currentDB = result.rows[0].current_database;
+      if (currentDB !== 'trekker2') {
+        throw new Error('Invalid database connection');
+      }
+      return true;
+    } finally {
+      client.release();
+    }
+  } catch (error) {
+    console.error('Database validation failed:', error);
+    return false;
+  }
+}
+
 const fs = require('fs-extra');
 
 // Check if a number has been messaged before
 async function hasBeenMessaged(phoneNumber) {
+  if (!await validateDatabaseConnection()) return false;
   try {
     const client = await pool.connect();
     try {
@@ -34,6 +59,7 @@ async function hasBeenMessaged(phoneNumber) {
 
 // Log a number as messaged
 async function logMessaged(phoneNumber) {
+  if (!await validateDatabaseConnection()) return false;
   try {
     const client = await pool.connect();
     try {
@@ -53,6 +79,7 @@ async function logMessaged(phoneNumber) {
 
 // Save broadcast progress with GitHub sync
 async function saveBroadcastProgress(progressData) {
+  if (!await validateDatabaseConnection()) return false;
   try {
     // Save to database
     const client = await pool.connect();
@@ -92,12 +119,12 @@ async function saveBroadcastProgress(progressData) {
         progressData.pausedTimestamp || null,
         progressData.resumedTimestamp || null
       ]);
-      
+
       // If contacts are provided, store them
       if (progressData.savedContacts && progressData.savedContacts.length > 0) {
         // Clear existing contacts
         await client.query('DELETE FROM contacts WHERE progress_id = $1', ['current']);
-        
+
         // Add new contacts
         for (const contact of progressData.savedContacts) {
           await client.query(
@@ -107,14 +134,14 @@ async function saveBroadcastProgress(progressData) {
           );
         }
       }
-      
+
       return true;
     } finally {
       client.release();
     }
   } catch (error) {
     console.error('Error saving broadcast progress:', error);
-    
+
     // Fallback to file system if database fails
     try {
       await fs.writeJSON('broadcast_progress.json', progressData);
@@ -128,6 +155,7 @@ async function saveBroadcastProgress(progressData) {
 
 // Get broadcast progress
 async function getBroadcastProgress() {
+  if (!await validateDatabaseConnection()) return null;
   try {
     const client = await pool.connect();
     try {
@@ -136,19 +164,19 @@ async function getBroadcastProgress() {
         'SELECT * FROM broadcast_progress WHERE id = $1',
         ['current']
       );
-      
+
       if (progressResult.rows.length === 0) {
         return null;
       }
-      
+
       const progressData = progressResult.rows[0];
-      
+
       // Get the contacts
       const contactsResult = await client.query(
         'SELECT * FROM contacts WHERE progress_id = $1 ORDER BY id',
         ['current']
       );
-      
+
       // Format the response to match the previous JSON structure
       return {
         currentIndex: progressData.current_index,
@@ -175,7 +203,7 @@ async function getBroadcastProgress() {
     }
   } catch (error) {
     console.error('Error getting broadcast progress:', error);
-    
+
     // Fallback to file system if database fails
     try {
       if (await fs.pathExists('broadcast_progress.json')) {
@@ -186,22 +214,23 @@ async function getBroadcastProgress() {
     } catch (fsError) {
       console.error('Error reading progress from file system:', fsError);
     }
-    
+
     return null;
   }
 }
 
 // Reset broadcast progress
 async function resetBroadcastProgress() {
+  if (!await validateDatabaseConnection()) return false;
   try {
     const client = await pool.connect();
     try {
       // Delete contacts first (due to foreign key constraint)
       await client.query('DELETE FROM contacts WHERE progress_id = $1', ['current']);
-      
+
       // Then delete the progress record
       await client.query('DELETE FROM broadcast_progress WHERE id = $1', ['current']);
-      
+
       return true;
     } finally {
       client.release();
@@ -214,6 +243,7 @@ async function resetBroadcastProgress() {
 
 // Reset broadcast logs
 async function resetBroadcastLogs() {
+  if (!await validateDatabaseConnection()) return false;
   try {
     const client = await pool.connect();
     try {
@@ -230,6 +260,7 @@ async function resetBroadcastLogs() {
 
 // Get broadcast stats
 async function getBroadcastStats() {
+  if (!await validateDatabaseConnection()) return { totalMessaged: 0 };
   try {
     const client = await pool.connect();
     try {

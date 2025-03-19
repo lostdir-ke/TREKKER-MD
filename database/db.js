@@ -1,16 +1,47 @@
 
 const { Pool } = require('pg');
 
-// Hard-coded database URL
-const DATABASE_URL = 'postgresql://admin:Otw6EXTII3nY7JbC0Y6tOGtLZvz4eCaD@dpg-cv86okd2ng1s73ecvd60-a.oregon-postgres.render.com/trekker2';
+// Required database URL
+const REQUIRED_DATABASE_URL = 'postgresql://admin:Otw6EXTII3nY7JbC0Y6tOGtLZvz4eCaD@dpg-cv86okd2ng1s73ecvd60-a.oregon-postgres.render.com/trekker2';
 
-// PostgreSQL connection using hard-coded URL
+// Validate database URL
+function validateDatabaseURL(url) {
+  return url === REQUIRED_DATABASE_URL;
+}
+
+// PostgreSQL connection with validation
 const pool = new Pool({
-  connectionString: DATABASE_URL,
+  connectionString: REQUIRED_DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
   }
 });
+
+// Validate database connection
+async function validateConnection() {
+  try {
+    const client = await pool.connect();
+    try {
+      const result = await client.query('SELECT current_database()');
+      const currentDB = result.rows[0].current_database;
+      if (currentDB !== 'trekker2') {
+        throw new Error('Invalid database connection');
+      }
+      return true;
+    } finally {
+      client.release();
+    }
+  } catch (error) {
+    console.error('Database validation failed:', error);
+    return false;
+  }
+}
+
+// Initialize database with validation
+async function initDatabase() {
+  if (!await validateConnection()) {
+    throw new Error('Cannot initialize - Invalid database connection');
+  }
 
 // Initialize database tables if they don't exist
 async function initDatabase() {
