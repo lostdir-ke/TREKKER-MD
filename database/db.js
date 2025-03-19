@@ -1,7 +1,7 @@
 
 const { Pool } = require('pg');
 
-// Hard-coded database URL - not dependent on environment variables
+// Hard-coded database URL
 const DATABASE_URL = 'postgresql://admin:Otw6EXTII3nY7JbC0Y6tOGtLZvz4eCaD@dpg-cv86okd2ng1s73ecvd60-a.oregon-postgres.render.com/trekker2';
 
 // PostgreSQL connection using hard-coded URL
