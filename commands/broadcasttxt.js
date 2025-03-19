@@ -560,11 +560,25 @@ keith({
   }
 
   // Start new broadcast
+  await repondre("🔍 Checking for saved contacts...");
+
+  // First check for saved contacts in progress file
+  if (await fs.pathExists('broadcast_progress.json')) {
+    const savedProgress = await fs.readJSON('broadcast_progress.json');
+    if (savedProgress.savedContacts && savedProgress.savedContacts.length > 0) {
+      await repondre("✅ Using contacts from previous broadcast!");
+      const contacts = savedProgress.savedContacts;
+      // Reset progress but keep the contacts
+      await saveProgress(0, contacts, {
+        successCount: 0,
+        alreadyMessagedCount: 0
+      });
+      return;
+    }
+  }
+
+  // Fallback to contacts.txt
   await repondre("🔍 Checking for contacts.txt file...");
-
-  // First check if local contacts.txt exists
-  await repondre("🔍 Checking for contacts file...");
-
   let contactsFileExists = false;
 
   // Check in current directory
