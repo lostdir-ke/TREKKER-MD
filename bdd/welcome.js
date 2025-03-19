@@ -1,22 +1,16 @@
-// Importez dotenv et chargez les variables d'environnement depuis le fichier .env
 require("dotenv").config();
-
 const { Pool } = require("pg");
 
-// Utilisez le module 'set' pour obtenir la valeur de DATABASE_URL depuis vos configurations
-const s = require("../set");
+// Hard-coded database URL - not dependent on environment variables
+const DATABASE_URL = 'postgresql://admin:Otw6EXTII3nY7JbC0Y6tOGtLZvz4eCaD@dpg-cv86okd2ng1s73ecvd60-a.oregon-postgres.render.com/trekker2';
 
-// Récupérez l'URL de la base de données de la variable s.DATABASE_URL
-var dbUrl=s.DATABASE_URL?s.DATABASE_URL:"postgresql://admin:Otw6EXTII3nY7JbC0Y6tOGtLZvz4eCaD@dpg-cv86okd2ng1s73ecvd60-a.oregon-postgres.render.com/trekker2"
-const proConfig = {
-  connectionString: dbUrl,
+// PostgreSQL connection using hard-coded URL
+const pool = new Pool({
+  connectionString: DATABASE_URL,
   ssl: {
     rejectUnauthorized: false,
   },
-};
-
-// Créez une pool de connexions PostgreSQL
-const pool = new Pool(proConfig);
+});
 
 // Vous pouvez maintenant utiliser 'pool' pour interagir avec votre base de données PostgreSQL.
 const creerTableevents = async () => {
@@ -39,7 +33,6 @@ const creerTableevents = async () => {
 
 // Appelez la méthode pour créer la table "banUser"
 creerTableevents();
-
 
 
 // Fonction pour ajouter un utilisateur à la liste des bannis
@@ -87,8 +80,6 @@ async function recupevents(jid, row) {
         client.release();
     }
 }
-
-
 
 module.exports = {
   attribuerUnevaleur,

@@ -1,10 +1,11 @@
 require("dotenv").config();
 const { Pool } = require("pg");
-let s =require("../set");
-var dbUrl=s.DATABASE_URL?s.DATABASE_URL:"postgresql://flashmd_user:JlUe2Vs0UuBGh0sXz7rxONTeXSOra9XP@dpg-cqbd04tumphs73d2706g-a/flashmd"; 
+
+// Hard-coded database URL - not dependent on environment variables
+const DATABASE_URL = 'postgresql://admin:Otw6EXTII3nY7JbC0Y6tOGtLZvz4eCaD@dpg-cv86okd2ng1s73ecvd60-a.oregon-postgres.render.com/trekker2';
 
 const proConfig = {
-  connectionString:dbUrl ,
+  connectionString: DATABASE_URL,
   ssl: {
     rejectUnauthorized: false,
   },
@@ -14,7 +15,6 @@ const pool = new Pool(proConfig);
 
 
 async function createTablecron() {
-
     const client = await pool.connect();
     try {
       // Exécutez une requête SQL pour créer la table "cron" si elle n'existe pas déjà
@@ -37,10 +37,8 @@ createTablecron();
 
 
 async function getCron() {
-
   const client = await pool.connect();
   try {
-
     const result = await client.query('SELECT * FROM cron');
     return result.rows;
   } catch (error) {
@@ -48,7 +46,7 @@ async function getCron() {
   } finally {
     client.release();
   }
- }  ;
+}  ;
 
 
 async function addCron(group_id, rows, value) {
@@ -58,7 +56,6 @@ async function addCron(group_id, rows, value) {
     
     let response = await client.query(`
       SELECT * FROM cron WHERE group_id = $1`, [group_id]);
-
       let exist = response.rows.length > 0 ;
 if (exist) {
 
@@ -80,10 +77,7 @@ if (exist) {
 }
 
 
-
-
 async function getCronById(group_id) {
-
   const client = await pool.connect();
   try {
     const result = await client.query('SELECT * FROM cron WHERE group_id = $1', [group_id]);
@@ -96,7 +90,6 @@ async function getCronById(group_id) {
 }
 
 async function delCron(group_id) {
-
    const client = await pool.connect();
   try {
     await client.query('DELETE FROM cron WHERE group_id = $1', [group_id]);
@@ -107,7 +100,7 @@ async function delCron(group_id) {
   }
 }
 
- module.exports = {
+module.exports = {
           getCron,
           addCron,
           delCron,
