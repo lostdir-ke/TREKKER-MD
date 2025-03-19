@@ -314,10 +314,9 @@ keith({
                  previousBroadcast.lastActive ? new Date(previousBroadcast.lastActive) : 
                  new Date();
 
-    await repondre(`📝 Found an active broadcast in progress from ${date.toLocaleString()}.\n\nResuming from contact ${previousBroadcast.currentIndex + 1}/${previousBroadcast.totalContacts}\n\nTo restart instead, use: .broadcast2 restart`);
-
-    // Check if there are contacts in the progress file
+    // Always prioritize saved contacts from progress file
     if (previousBroadcast.savedContacts && previousBroadcast.savedContacts.length > 0) {
+      await repondre(`📝 Found an active broadcast with ${previousBroadcast.savedContacts.length} saved contacts from ${date.toLocaleString()}.\n\nResuming from contact ${previousBroadcast.currentIndex + 1}/${previousBroadcast.totalContacts}\n\nTo restart instead, use: .broadcast2 restart`);
       console.log("Using contacts from saved progress file");
 
       // Resume using these saved contacts
@@ -334,6 +333,9 @@ keith({
       await fs.writeJSON('broadcast_progress.json', resumeData);
 
       // Silently return - the code below will detect this progress and resume
+      return;
+    } else {
+      await repondre(`📝 Found an active broadcast in progress from ${date.toLocaleString()}.\n\nResuming from contact ${previousBroadcast.currentIndex + 1}/${previousBroadcast.totalContacts}\n\nTo restart instead, use: .broadcast2 restart`);
     }
   }
 
@@ -449,7 +451,7 @@ keith({
 
       // Get starting index from argument or use saved progress
       const startIndex = arg[0] ? parseInt(arg[0]) : progress.currentIndex || 0;
-      
+
       // Make sure the index is valid
       if (startIndex >= contacts.length) {
         return repondre(`❌ Starting index (${startIndex}) is invalid for contact list with ${contacts.length} contacts.`);
@@ -620,11 +622,11 @@ keith({
       const alreadyMessaged = await hasBeenMessaged(contact.phoneNumber);
       const progress = await readProgress();
       const isInHistory = progress?.messageHistory?.includes(contact.phoneNumber);
-      
+
       if (alreadyMessaged || isInHistory) {
         alreadyMessagedCount++;
         console.log(`Skipping ${contact.phoneNumber} - already messaged`);
-        
+
         // Update progress with skipped number
         if (!progress?.messageHistory?.includes(contact.phoneNumber)) {
           progress.messageHistory = [...(progress.messageHistory || []), contact.phoneNumber];
@@ -709,3 +711,15 @@ keith({
     repondre(`❌ An error occurred: ${error.message}`);
   }
 });
+
+async function saveBroadcastProgress(progress) {
+  try {
+    await fs.writeJSON('broadcast_progress.json', progress);
+    await fs.ensureDir('attached_assets');
+    await fs.writeJSON('attached_assets/broadcast_progress.json', progress);
+    return true;
+  } catch (error) {
+    console.error("Error saving broadcast progress:", error);
+    return false;
+  }
+}
