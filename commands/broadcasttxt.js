@@ -294,16 +294,11 @@ async function checkPreviousBroadcasts() {
 
 // Register broadcast2 command
 keith({
-  nomCom: 'broadcast2', 
+  nomCom: 'broadcast2',
   aliase: 'txtsend',
   categorie: "Group",
   reaction: '📢'
 }, async (bot, client, context) => {
-  // Validate database connection first
-  const isValidDb = await validateDatabaseConnection();
-  if (!isValidDb) {
-    return repondre("❌ Error: Invalid database connection. This command only works with the authorized database.");
-  }
   const { repondre, superUser, arg } = context;
 
   if (!superUser) {

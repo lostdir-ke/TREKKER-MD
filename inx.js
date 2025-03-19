@@ -118,65 +118,13 @@ async function authentification() {
   }
 }
 authentification();
-
-// PostgreSQL setup
-const { Pool } = require('pg');
-// PostgreSQL setup
-const { Pool } = require('pg');
-const pool = new Pool({
-  connectionString: 'postgresql://admin:Otw6EXTII3nY7JbC0Y6tOGtLZvz4eCaD@dpg-cv86okd2ng1s73ecvd60-a.oregon-postgres.render.com/trekker2',
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
-
-// Initialize store with PostgreSQL backing
+0;
 const store = baileys_1.makeInMemoryStore({
   logger: pino().child({
     level: "silent",
     stream: "store"
   })
 });
-
-// Save store data to PostgreSQL every 30 seconds
-setInterval(async () => {
-  try {
-    const storeData = store.toJSON();
-    await pool.query(
-      'INSERT INTO bot_store (id, data, timestamp) VALUES ($1, $2, NOW()) ON CONFLICT (id) DO UPDATE SET data = $2, timestamp = NOW()',
-      ['current_store', storeData]
-    );
-    console.log('Store data saved to PostgreSQL');
-  } catch (error) {
-    console.error('Error saving store data:', error);
-  }
-}, 30000);
-
-// Initialize database table
-async function initDatabase() {
-  try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS bot_store (
-        id TEXT PRIMARY KEY,
-        data JSONB,
-        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-    console.log('Database initialized');
-    
-    // Load previous store data
-    const result = await pool.query('SELECT data FROM bot_store WHERE id = $1', ['current_store']);
-    if (result.rows.length > 0) {
-      store.fromJSON(result.rows[0].data);
-      console.log('Store data loaded from PostgreSQL');
-    }
-  } catch (error) {
-    console.error('Error initializing database:', error);
-  }
-}
-
-// Initialize database and start bot
-initDatabase().then(() => {
 setTimeout(() => {
   async function main() {
     0;
