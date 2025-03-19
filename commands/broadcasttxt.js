@@ -447,12 +447,19 @@ keith({
         return repondre("❌ No valid contacts found in the file.");
       }
 
+      // Get starting index from argument or use saved progress
+      const startIndex = arg[0] ? parseInt(arg[0]) : progress.currentIndex || 0;
+      
       // Make sure the index is valid
-      if (progress.currentIndex >= contacts.length) {
-        return repondre(`❌ Saved progress index (${progress.currentIndex}) is invalid for contact list with ${contacts.length} contacts.\n\nPlease use .broadcast2 restart to start over.`);
+      if (startIndex >= contacts.length) {
+        return repondre(`❌ Starting index (${startIndex}) is invalid for contact list with ${contacts.length} contacts.`);
       }
 
-      await repondre(`📊 Resuming broadcast from contact ${progress.currentIndex + 1}/${contacts.length}...`);
+      // Update progress with new starting index
+      progress.currentIndex = startIndex;
+      await saveBroadcastProgress(progress);
+
+      await repondre(`📊 Starting broadcast from contact ${startIndex + 1}/${contacts.length}...`);
 
       // Initialize stats
       let successCount = progress.stats?.successCount || 0;
