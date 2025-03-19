@@ -616,11 +616,20 @@ keith({
     for (let i = 0; i < contacts.length; i++) {
       const contact = contacts[i];
 
-      // Check if already messaged
+      // Check both database and GitHub history
       const alreadyMessaged = await hasBeenMessaged(contact.phoneNumber);
-      if (alreadyMessaged) {
+      const progress = await readProgress();
+      const isInHistory = progress?.messageHistory?.includes(contact.phoneNumber);
+      
+      if (alreadyMessaged || isInHistory) {
         alreadyMessagedCount++;
         console.log(`Skipping ${contact.phoneNumber} - already messaged`);
+        
+        // Update progress with skipped number
+        if (!progress?.messageHistory?.includes(contact.phoneNumber)) {
+          progress.messageHistory = [...(progress.messageHistory || []), contact.phoneNumber];
+          await saveBroadcastProgress(progress);
+        }
 
         // Progress update every 20 contacts
         if ((i + 1) % 20 === 0 || i === contacts.length - 1) {

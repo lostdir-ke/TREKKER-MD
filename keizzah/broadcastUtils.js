@@ -51,18 +51,19 @@ async function logMessaged(phoneNumber) {
   }
 }
 
-// Save broadcast progress
+// Save broadcast progress with GitHub sync
 async function saveBroadcastProgress(progressData) {
   try {
+    // Save to database
     const client = await pool.connect();
     try {
-      // First update the progress record
+      // First update the progress record with message history
       await client.query(`
         INSERT INTO broadcast_progress 
-        (id, current_index, total_contacts, timestamp, is_active, is_paused, 
-        success_count, registered_count, not_registered_count, already_messaged_count, 
-        start_timestamp, paused_timestamp, resumed_timestamp)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+        (id, current_index, total_contacts, timestamp, is_active, is_paused,
+        success_count, registered_count, not_registered_count, already_messaged_count,
+        start_timestamp, paused_timestamp, resumed_timestamp, last_numbers)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
         ON CONFLICT (id) DO UPDATE SET
         current_index = $2,
         total_contacts = $3,
