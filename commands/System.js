@@ -109,7 +109,7 @@ keith({
 
   try {
     // Inform the user that the bot is restarting
-    await repondre("> *𝗧𝗥𝗘𝗞𝗞𝗘𝗥 𝗠𝗗 is Restarting from the server...*");
+    await repondre("*TREKKER-MD is restarting...*");
 
     // Function to create a delay
     const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
