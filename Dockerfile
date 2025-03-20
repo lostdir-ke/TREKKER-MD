@@ -1,2 +1,32 @@
- FROM node:lts-buster  RUN apt-get update && \   apt-get install -y \   ffmpeg \   imagemagick \   webp && \   apt-get upgrade -y && \   npm i pm2 -g && \   rm -rf /var/lib/apt/lists/*  RUN git clone https://github.com/Beltah254/BELTAH-MD /root/beltah_Bot WORKDIR /root/beltah_Bot/   COPY package.json . RUN npm install pm2 -g RUN npm install --legacy-peer-deps  COPY . .  EXPOSE ${PORT} EXPOSE $PORT  CMD ["node", "index.js"]
-‎heroku.ymlCopy file name to clipboardexpand all lines: heroku.yml+1-1Original file line numberDiff line numberDiff line change @@ -6,4 +6,4 @@ run:   web:     command:       - node index.js     image: web     image: beltah-md-bot:latest
+FROM node:lts-buster
+
+# Install dependencies and tools
+RUN apt-get update && \
+    apt-get install -y \
+    ffmpeg \
+    imagemagick \
+    webp && \
+    apt-get upgrade -y && \
+    npm i pm2 -g && \
+    rm -rf /var/lib/apt/lists/*
+
+# Clone the repository
+RUN git clone https://github.com/Beltah254/BELTAH-MD /root/beltah_Bot
+
+# Set working directory
+WORKDIR /root/beltah_Bot/
+
+# Copy package.json and install dependencies
+COPY package.json .
+RUN npm install pm2 -g
+RUN npm install --legacy-peer-deps
+
+# Copy all files
+COPY . .
+
+# Expose the port
+EXPOSE ${PORT}
+EXPOSE $PORT
+
+# Start the application
+CMD ["node", "index.js"]
